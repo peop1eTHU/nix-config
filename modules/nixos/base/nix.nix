@@ -1,8 +1,21 @@
-{ lib, pkgs, ... }:
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.modules.nix.mirrors;
+  # The mainland mirrors of the NixOS binary cache. They proxy cache.nixos.org, so
+  # they keep its signing key; verify a path with:
+  #   curl -s https://mirror.nju.edu.cn/nix-channels/store/<hash>.narinfo
+  cnMirrors = [
+    "https://mirror.nju.edu.cn/nix-channels/store"
+    "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+  ];
+in
 {
+  options.modules.nix.mirrors.enable = lib.mkEnableOption "Mainland China mirrors for the Nix binary cache";
+
   # Nix 2.35 is newer than nixpkgs' nixVersions.stable (still 2.34), so opt into
   # the latest released version until stable catches up.
   # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/tools/package-management/nix/default.nix
+  config = {
   nix.package = pkgs.nixVersions.latest;
 
   # https://lix.systems/add-to-config/
@@ -43,7 +56,15 @@
     extra-sandbox-paths = [
       "/dev/net"
     ];
+  }
+  // lib.optionalAttrs cfg.enable {
+    # Mainland mirrors of the NixOS binary cache. They proxy cache.nixos.org and
+    # serve its signature, so `trusted-public-keys` stays untouched. `mkBefore`
+    # prepends without dropping the defaults, so a mirror miss still falls back
+    # to the official cache.
+    substituters = lib.mkBefore cnMirrors;
   };
 
   nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
+  };
 }

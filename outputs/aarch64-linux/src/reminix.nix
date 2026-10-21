@@ -28,6 +28,10 @@ let
           modules.desktop.wayland.enable = true;
           programs.niri.enable = true;
 
+          # cache.nixos.org is effectively unreachable from this network, so take
+          # the binary cache from the mainland mirrors instead.
+          modules.nix.mirrors.enable = true;
+
           # Opted out on this host; the modules stay in the tree for future hosts.
           modules.desktop.canokey.enable = false;
           modules.desktop.gaming.enable = false;
