@@ -678,35 +678,35 @@
     "my-asahi-firmware": {
       "flake": false,
       "locked": {
-        "lastModified": 1788100858,
-        "narHash": "sha256-UJss8f9nEu36g7yQRmVxJF7z1a5Tx3dI051Tz62Gr1w=",
+        "lastModified": 1792585379,
+        "narHash": "sha256-QCcXSWZILPvSrpSU84qUsToBVR1TUEWay5ggGCH2Mm8=",
         "ref": "refs/heads/main",
-        "rev": "ca21cc53d539ebcb43ef7611fa764b73947df762",
+        "rev": "471ce0d90943417165bf84208f05ab270e6fddcc",
         "shallow": true,
         "type": "git",
-        "url": "ssh://git@github.com/ryan4yin/asahi-firmware.git"
+        "url": "ssh://git@github.com/peop1eTHU/my-asahi-firmware.git"
       },
       "original": {
         "shallow": true,
         "type": "git",
-        "url": "ssh://git@github.com/ryan4yin/asahi-firmware.git"
+        "url": "ssh://git@github.com/peop1eTHU/my-asahi-firmware.git"
       }
     },
     "mysecrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1790919428,
-        "narHash": "sha256-04+A6Hmjj2lXGanEWfqoQkkAGiQgVT0CMY5BTOlfcBo=",
+        "lastModified": 1792585326,
+        "narHash": "sha256-siWEJllr7E0Tv6Zva9jxC2Nl7w4MOwcN0kKNvh0gkjk=",
         "ref": "refs/heads/main",
-        "rev": "7b78dbb128be0ca52ac2815d5d8a73c5f883dada",
+        "rev": "38df2310e37bf7e533d57df1db1912477f7ce6be",
         "shallow": true,
         "type": "git",
-        "url": "ssh://git@github.com/ryan4yin/nix-secrets.git"
+        "url": "ssh://git@github.com/peop1eTHU/nix-secrets.git"
       },
       "original": {
         "shallow": true,
         "type": "git",
-        "url": "ssh://git@github.com/ryan4yin/nix-secrets.git"
+        "url": "ssh://git@github.com/peop1eTHU/nix-secrets.git"
       }
     },
     "nix-darwin": {

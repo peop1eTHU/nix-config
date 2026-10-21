@@ -7,6 +7,10 @@
   ...
 }:
 let
+  # The public half of the recovery key lives in the private secrets repo.
+  # Hosts whose secrets repo has no `public/` set keep this off (myvars), since
+  # the option itself is declared on the NixOS side, not in home-manager.
+  hasPublicKeys = myvars.secrets.publicKeys.enable;
   # WA-035: settings for the home LAN, which the desktop reaches over a Mesh
   # WiFi backhaul.
   lanHost = {
@@ -24,7 +28,12 @@ let
   };
 in
 {
-  home.file.".ssh/romantic.pub".source = "${mysecrets}/public/romantic.pub";
+  # The public half of the recovery key lives in the private secrets repo. Hosts
+  # without that repo's `public/` set leave it switched off rather than pointing
+  # Home Manager at a path that does not exist.
+  home.file.".ssh/romantic.pub" = lib.mkIf hasPublicKeys {
+    source = "${mysecrets}/public/romantic.pub";
+  };
 
   programs.ssh = {
     enable = true;

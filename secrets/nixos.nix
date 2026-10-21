@@ -38,6 +38,11 @@ in
   ];
 
   options.modules.secrets = {
+    # Pins the public keys that live next to the secrets repo (`public/`) into the
+    # home environment: the recovery SSH key and the GPG public keyring. Off by
+    # default so a host whose secrets repo has no `public/` set still evaluates.
+    publicKeys.enable = mkEnableOption "Public keys from the secrets repository";
+
     desktop.enable = mkEnableOption "NixOS Secrets for Desktops";
 
     server.network.enable = mkEnableOption "NixOS Secrets for Network Servers";

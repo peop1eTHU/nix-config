@@ -1,8 +1,13 @@
 {
   config,
+  myvars,
   mysecrets,
   ...
 }:
+let
+  # Declared on the NixOS side; home-manager reads it through myvars.
+  hasPublicKeys = myvars.secrets.publicKeys.enable;
+in
 {
   programs.gpg = {
     enable = true;
@@ -18,13 +23,15 @@
     # If set `mutableKeys` to false, the path $GNUPGHOME/pubring.kbx will become an immutable link to the Nix store, denying modifications.
     # Thus we can only update pubring.kbx via home-manager
     mutableKeys = false;
-    publicKeys = [
+    # The published key lives in the private secrets repo; a host whose secrets
+    # repo has no `public/` set runs without a pinned keyring.
+    publicKeys = if hasPublicKeys then [
       # https://www.gnupg.org/gph/en/manual/x334.html
       {
-        source = "${mysecrets}/public/ryan4yin-gpg-keys-2014-01-27.pub";
+        source = "${mysecrets}/public/remi-gpg-keys.pub";
         trust = 5;
       } # ultimate trust, my own keys.
-    ];
+    ] else [ ];
 
     # This configuration is based on the tutorial below, it allows for a robust setup
     # https://blog.eleven-labs.com/en/openpgp-almost-perfect-key-pair-part-1

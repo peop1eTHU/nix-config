@@ -1,15 +1,18 @@
 { lib }:
 {
-  username = "ryan";
-  userfullname = "Ryan Yin";
-  useremail = "xiaoyin_c@qq.com";
+  username = "remi";
+  userfullname = "Remi";
+  useremail = "cqq060213@163.com";
   networking = import ./networking.nix { inherit lib; };
-  # Generated using: mkpasswd -m yescrypt --rounds=11
-  # Password: long, strong random string (full charset)
-  # Rotation policy: changed annually
-  # Purpose: system login password only
+  # Home-manager modules cannot see the NixOS `modules.secrets.*` options, so the
+  # switches they need are mirrored here. Keep them in step with
+  # `outputs/<system>/src/<host>.nix`; `secrets.publicKeys.enable` there is the
+  # NixOS-side option that gates the same files.
+  secrets.publicKeys.enable = false;
+  # Temporary bootstrap password; rotate it with `passwd` after the first login.
+  # Generated using: openssl passwd -6 -salt reminix 123456
   # https://man.archlinux.org/man/crypt.5.en
-  initialHashedPassword = "$y$jFT$RBapCH3F6bc0uSF.FaUGB.$rvhiVvcCKxkkumDFLONV5zFP1lsv1VyZ1ErH.r2rNk3";
+  initialHashedPassword = "$6$reminix$JUQ0C3p7EWu3LtRFp5PnE7KPMBF6w2Z8cfINh64tUyfFb3QIey3pzo9Z4Y9U.AHsT5TbWm5lOvKXDkDfbzb3N/";
   # Public Keys that can be used to login to all my PCs, Macbooks, and servers.
   #
   # Since its authority is so large, we must strengthen its security:
@@ -23,19 +26,13 @@
   #    2. Never leave the device and never sent over the network.
   # 2. Or just use hardware security keys like Yubikey/CanoKey.
   mainSshAuthorizedKeys = [
-    # The main ssh keys for daily usage
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIKlN+Q/GxvwxDX/OAjJHaNFEznEN4Tw4E4TwqQu/eD6 ryan@idols-ai"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJwoI5MAogEa726jwwHL5EgM1X/i2A5d2pgV7i7t8fzB ryan@shoukei"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDc1PNTXzzvd93E+e9LXvnEzqgUI5gMTEF/IitvzgmL+ ryan@frieren"
+    # The main ssh key for daily usage (MacBook, the host that runs the UTM VM)
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOcJoNIw0pXencMB+ItHPIbrFyj+UvMa5odR2v8mpKW jyxc-dz-0101390@JYXC-DZ-0101390deMacBook-Pro.local"
   ];
   secondaryAuthorizedKeys = [
     # the backup ssh keys for disaster recovery
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMzYT0Fpcp681eHY5FJV2G8Mve53iX3hMOLGbVvfL+TF ryan@romantic"
   ];
   # The SSH host keys of the machines whose nix-daemons build through aquamarine
   # (modules/nixos/base/remote-builders.nix).
-  remoteBuilderClientKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINHZtzeaQyXwuRMLzoOAuTu8P9bu5yc5MBwo5LI3iWBV root@ai"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILDkbOwOeuAem8BKbyTDliRiTfHVAFdiVpAKh1bhs2s0 root@shoukei"
-  ];
+  remoteBuilderClientKeys = [ ];
 }
