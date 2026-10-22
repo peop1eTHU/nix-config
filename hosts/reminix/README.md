@@ -69,10 +69,16 @@ niri validate
 ```sh
 cd ~/nix-config
 git pull --ff-only
-nix build .#nixosConfigurations.reminix.config.system.build.toplevel --max-jobs 2 --cores 2
-# 以下由用户在维护窗口执行；会激活新系统并可能热重载桌面配置。
-sudo ./result/bin/switch-to-configuration switch
+# 只构建不激活，先确认能通过：
+nixos-rebuild build --flake .#reminix
+# 构建、登记为新的系统代数、更新启动项并立即切换：
+sudo nixos-rebuild switch --flake .#reminix
+# 出问题时回到上一代：
+sudo nixos-rebuild switch --rollback
 ```
+
+不要用 `./result/bin/switch-to-configuration switch` 代替：它只切换当前运行的系统，不会把新系统写入
+`/nix/var/nix/profiles/system`，重启后会回到旧的一代。
 
 ## Notes
 
