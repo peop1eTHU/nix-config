@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   hostName = "reminix"; # Define your hostname.
 in
@@ -9,6 +14,32 @@ in
 
   modules.desktop.niri.enable = true;
   modules.desktop.gaming.enable = false;
+
+  xdg.configFile."niri/niri-hardware.kdl".source = ../../../hosts/reminix/niri-hardware.kdl;
+
+  # Ghostty 1.3.1 needs OpenGL 4.3; UTM's Core OpenGL backend exposes at most 4.1.
+  # Limit the software renderer to Ghostty, leaving niri and Kitty accelerated.
+  programs.ghostty.package = lib.mkForce (
+    pkgs.symlinkJoin {
+      name = "ghostty-reminix";
+      paths = [ pkgs.ghostty ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      meta = pkgs.ghostty.meta;
+      postBuild = ''
+        wrapProgram $out/bin/ghostty --set LIBGL_ALWAYS_SOFTWARE 1
+
+        # The upstream D-Bus and systemd units hardcode the unwrapped binary;
+        # point them at the wrapper so every launch path gets the same renderer.
+        for unit in \
+          share/systemd/user/app-com.mitchellh.ghostty.service \
+          share/dbus-1/services/com.mitchellh.ghostty.service; do
+          rm "$out/$unit"
+          substitute "${pkgs.ghostty}/$unit" "$out/$unit" \
+            --replace-fail "${pkgs.ghostty}/bin/ghostty" "$out/bin/ghostty"
+        done
+      '';
+    }
+  );
 
   # Not needed on a dev VM: bambu-studio has no aarch64 binary in the cache and
   # takes over an hour to compile, blender alone is several GB.

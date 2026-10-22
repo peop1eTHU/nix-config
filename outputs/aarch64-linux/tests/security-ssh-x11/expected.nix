@@ -5,7 +5,7 @@
 lib.genAttrs (builtins.attrNames outputs.nixosConfigurations) (
   name:
   let
-    isDesktop = name == "ai-niri" || name == "shoukei-niri";
+    isDesktop = name == "ai-niri" || name == "shoukei-niri" || name == "reminix";
   in
   {
     X11Forwarding = isDesktop;

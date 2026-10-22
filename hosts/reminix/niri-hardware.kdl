@@ -1,0 +1,2 @@
+// UTM supplies a virtual display; use niri's detected mode and scale.
+// Keep this include present so the shared compositor configuration can load.

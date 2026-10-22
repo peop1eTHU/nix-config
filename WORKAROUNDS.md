@@ -67,6 +67,12 @@ only delete inactive duplicates.
 
 ## Known issues
 
+### WA-042 — reminix：Ghostty 单应用软件渲染
+
+`home/hosts/linux/reminix.nix` 对 Ghostty 包装 `LIBGL_ALWAYS_SOFTWARE=1`。实测 UTM 默认 ANGLE Metal/virgl 仅提供桌面 OpenGL 2.1；UTM 5.0.8 的 Apple Core OpenGL 后端官方支持 4.1，而 Ghostty 1.3.1 要求 4.3。Kitty 和 niri 不使用此变量。
+
+移除条件：UTM 的硬件路径实际提供 Ghostty 所需的 OpenGL 功能，并且窗口启动、绘制测试通过；更新 UTM、Mesa 或 Ghostty 时复测。不要用 `MESA_GL_VERSION_OVERRIDE` 伪报版本。复测与回退步骤见 `hosts/reminix/README.md`。添加日期：2026-10-22，状态：active。
+
 A known limitation with no fix yet.
 
 | ID     | What & where                                                                                                                                                                | Why                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Removal condition                                                                                                             | Added      | Revisit                                                        | Status |

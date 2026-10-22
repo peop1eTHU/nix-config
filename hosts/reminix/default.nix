@@ -58,6 +58,12 @@ in
     inherit hostName;
 
     networkmanager.enable = true;
+
+    # Shared firewall trusts the upstream LAN, not UTM's host-only gateway.
+    # Allow key-authenticated SSH from this Mac without opening the whole subnet.
+    firewall.extraInputRules = ''
+      ip saddr 192.168.64.1 tcp dport 22 accept
+    '';
   };
 
   # This value determines the NixOS release from which the default
