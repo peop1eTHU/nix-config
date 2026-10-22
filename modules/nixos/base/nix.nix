@@ -65,6 +65,14 @@ in
       extra-sandbox-paths = [
         "/dev/net"
       ];
+
+      # Prebuilt binaries for the `llm-agents` input (codex, claude-code, ...).
+      # The NixOS mirrors only carry nixpkgs, so without this every agent CLI
+      # compiles from source. Key from github:numtide/llm-agents.nix README.
+      extra-substituters = [ "https://cache.numtide.com" ];
+      extra-trusted-public-keys = [
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      ];
     }
     // lib.optionalAttrs cfg.enable {
       # Mainland mirrors of the NixOS binary cache. They proxy cache.nixos.org and
