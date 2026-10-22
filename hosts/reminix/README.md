@@ -30,11 +30,11 @@ backend and `virtio-gpu-gl-pci` for OpenGL acceleration (niri needs it).
 4. Partition and install:
 
    ```sh
-   sudo nix --experimental-features "nix-command flakes" run \
-     github:nix-community/disko -- --mode destroy,format,mount hosts/reminix/disko-fs.nix
+   sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko \
+     -- --mode destroy,format,mount --yes-wipe-all-disks hosts/reminix/disko-fs.nix
 
    sudo nixos-install --root /mnt --flake .#reminix --no-root-password --show-trace \
-     --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/"
+     --option substituters "https://mirrors.sjtug.sjtu.edu.cn/nix-channels/store https://mirrors.ustc.edu.cn/nix-channels/store https://mirror.nju.edu.cn/nix-channels/store https://cache.nixos.org"
    ```
 
 5. `reboot`, log in as `remi` with the bootstrap password from

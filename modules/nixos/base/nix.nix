@@ -2,11 +2,14 @@
 let
   cfg = config.modules.nix.mirrors;
   # The mainland mirrors of the NixOS binary cache. They proxy cache.nixos.org, so
-  # they keep its signing key; verify a path with:
-  #   curl -s https://mirror.nju.edu.cn/nix-channels/store/<hash>.narinfo
+  # they keep its signing key. Ordered by coverage of a recent nixos-unstable pin
+  # (measured 2026-10): SJTUG and USTC had every path, NJU lagged, TUNA lagged
+  # the most and is left out. Check a path with:
+  #   curl -s -o /dev/null -w '%{http_code}' https://<mirror>/<hash>.narinfo
   cnMirrors = [
+    "https://mirrors.sjtug.sjtu.edu.cn/nix-channels/store"
+    "https://mirrors.ustc.edu.cn/nix-channels/store"
     "https://mirror.nju.edu.cn/nix-channels/store"
-    "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
   ];
 in
 {
