@@ -1,10 +1,12 @@
 {
   config,
+  lib,
   pkgs,
   tuios,
   ...
 }:
 let
+  cfg = config.modules.tuios;
   # nixpkgs lags behind upstream; use the flake input.
   tuiosPkg = tuios.packages.${pkgs.stdenv.hostPlatform.system}.tuios;
 
@@ -13,34 +15,42 @@ let
   configDir = "${config.home.homeDirectory}/nix-config/home/base/tui/tuios";
 in
 {
-  home.packages = [ tuiosPkg ];
+  options.modules.tuios.autoStart = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Attach every interactive nushell to a tuios session.";
+  };
 
-  xdg.configFile."tuios/config.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${configDir}/config.toml";
+  config = {
+    home.packages = [ tuiosPkg ];
 
-  # auto-start tuios in interactive shells, except when already inside tuios.
-  # `work` for the ~/work tree, `personal` for everything else (a host with no
-  # ~/work gets `personal` everywhere).
-  programs.nushell.extraConfig = ''
-    if $nu.is-interactive and (not ("TUIOS_SESSION" in $env)) {
-      # Exit 3 means the daemon is stopped; stdout still lists saved sessions.
-      let listing = (^tuios ls --json | complete)
-      if $listing.exit_code not-in [0 3] {
-        error make {msg: $"tuios ls failed: ($listing.stderr)"}
-      }
-      let sessions = ($listing.stdout | from json | get name)
-      let work_root = ($nu.home-dir | path join "work")
-      if $env.PWD == $work_root or ($env.PWD | str starts-with $"($work_root)/") {
-        if "work" not-in $sessions {
-          ^tuios new work --detach --cwd $work_root
+    xdg.configFile."tuios/config.toml".source =
+      config.lib.file.mkOutOfStoreSymlink "${configDir}/config.toml";
+
+    # auto-start tuios in interactive shells, except when already inside tuios.
+    # `work` for the ~/work tree, `personal` for everything else (a host with no
+    # ~/work gets `personal` everywhere).
+    programs.nushell.extraConfig = lib.mkIf cfg.autoStart ''
+      if $nu.is-interactive and (not ("TUIOS_SESSION" in $env)) {
+        # Exit 3 means the daemon is stopped; stdout still lists saved sessions.
+        let listing = (^tuios ls --json | complete)
+        if $listing.exit_code not-in [0 3] {
+          error make {msg: $"tuios ls failed: ($listing.stderr)"}
         }
-        ^tuios attach work
-      } else {
-        if "personal" not-in $sessions {
-          ^tuios new personal --detach --cwd $nu.home-dir
+        let sessions = ($listing.stdout | from json | get name)
+        let work_root = ($nu.home-dir | path join "work")
+        if $env.PWD == $work_root or ($env.PWD | str starts-with $"($work_root)/") {
+          if "work" not-in $sessions {
+            ^tuios new work --detach --cwd $work_root
+          }
+          ^tuios attach work
+        } else {
+          if "personal" not-in $sessions {
+            ^tuios new personal --detach --cwd $nu.home-dir
+          }
+          ^tuios attach personal
         }
-        ^tuios attach personal
       }
-    }
-  '';
+    '';
+  };
 }

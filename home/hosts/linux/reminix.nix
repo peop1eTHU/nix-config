@@ -15,6 +15,9 @@ in
   modules.desktop.niri.enable = true;
   modules.desktop.gaming.enable = false;
 
+  # Plain nushell in new terminals; tuios stays installed for manual use.
+  modules.tuios.autoStart = false;
+
   xdg.configFile."niri/niri-hardware.kdl".source = ../../../hosts/reminix/niri-hardware.kdl;
 
   # Ghostty 1.3.1 needs OpenGL 4.3; UTM's Core OpenGL backend exposes at most 4.1.
