@@ -3,8 +3,9 @@
   ...
 }:
 {
-  home.packages = with pkgs; [
-    nixpaks.firefox
+  # Sandboxed Firefox on hosts with the nixpak overlay, plain Firefox elsewhere.
+  home.packages = [
+    (if pkgs ? nixpaks then pkgs.nixpaks.firefox else pkgs.firefox)
   ];
 
   # source code: https://github.com/nix-community/home-manager/blob/master/modules/programs/chromium.nix
