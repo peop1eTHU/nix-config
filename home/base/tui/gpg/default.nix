@@ -25,13 +25,17 @@ in
     mutableKeys = false;
     # The published key lives in the private secrets repo; a host whose secrets
     # repo has no `public/` set runs without a pinned keyring.
-    publicKeys = if hasPublicKeys then [
-      # https://www.gnupg.org/gph/en/manual/x334.html
-      {
-        source = "${mysecrets}/public/remi-gpg-keys.pub";
-        trust = 5;
-      } # ultimate trust, my own keys.
-    ] else [ ];
+    publicKeys =
+      if hasPublicKeys then
+        [
+          # https://www.gnupg.org/gph/en/manual/x334.html
+          {
+            source = "${mysecrets}/public/remi-gpg-keys.pub";
+            trust = 5;
+          } # ultimate trust, my own keys.
+        ]
+      else
+        [ ];
 
     # This configuration is based on the tutorial below, it allows for a robust setup
     # https://blog.eleven-labs.com/en/openpgp-almost-perfect-key-pair-part-1
