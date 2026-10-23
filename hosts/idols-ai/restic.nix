@@ -1,5 +1,7 @@
 {
   config,
+  lib,
+  mylib,
   ...
 }:
 {
@@ -15,7 +17,13 @@
   modules.restic-backup = {
     enable = true;
     repository = "rest:https://restic.writefor.fun/idols-ai/";
-    environmentFile = config.age.secrets."restic-rest-credentials".path;
+    environmentFile = lib.mkIf config.modules.restic-backup.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "restic-rest-credentials";
+        consumer = "service restic backup on idols-ai";
+      }
+    );
 
     paths = [
       "/home/ryan/Documents"

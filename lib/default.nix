@@ -1,8 +1,26 @@
 { lib, ... }:
-{
+rec {
   colmenaSystem = import ./colmenaSystem.nix;
   macosSystem = import ./macosSystem.nix;
   nixosSystem = import ./nixosSystem.nix;
+
+  secretAvailable =
+    config: name:
+    (config.age.enable or true)
+    && builtins.hasAttr name (config.age.secrets or { })
+    && (config.age.secrets.${name}.enable or true);
+
+  requireSecretPath =
+    {
+      config,
+      name,
+      consumer,
+      item ? name,
+    }:
+    if secretAvailable config name then
+      config.age.secrets.${name}.path
+    else
+      throw "${consumer} requires secret '${name}'; enable modules.secrets.items.\"${item}\".enable or disable the consumer.";
 
   genK3sServerModule = import ./genK3sServerModule.nix;
   genK3sAgentModule = import ./genK3sAgentModule.nix;

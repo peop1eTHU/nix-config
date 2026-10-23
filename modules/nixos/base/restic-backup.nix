@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  mylib,
   ...
 }:
 let
@@ -83,7 +84,7 @@ in
     environmentFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
-      example = config.age.secrets."restic-rest-credentials".path;
+      example = "/run/agenix/restic-rest-credentials";
       description = ''
         systemd `EnvironmentFile` with restic environment variables. Needed for
         a `rest:` repository, whose credentials are environment-only
@@ -151,7 +152,16 @@ in
       inherit (cfg) repository;
       initialize = true;
       # take the path from agenix itself instead of hardcoding its secretsDir
-      passwordFile = config.age.secrets."restic-password".path;
+      passwordFile = mylib.requireSecretPath {
+        inherit config;
+        name = "restic-password";
+        item =
+          if config.modules.secrets.items.desktop-restic-password.enable then
+            "desktop-restic-password"
+          else
+            "homelab-restic-password";
+        consumer = "modules.restic-backup";
+      };
 
       paths = if cfg.snapshotSource != null then [ snapshotPath ] else cfg.paths;
 

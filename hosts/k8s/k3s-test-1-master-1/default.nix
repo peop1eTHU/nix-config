@@ -19,7 +19,13 @@ let
   k3sModule = mylib.genK3sServerModule {
     inherit pkgs;
     kubeconfigFile = "/home/${myvars.username}/.kube/config";
-    tokenFile = config.age.secrets."k3s-test-1-token".path;
+    tokenFile = lib.mkIf config.services.k3s.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "k3s-test-1-token";
+        consumer = "service k3s on ${hostName}";
+      }
+    );
     # the first node in the cluster should be the one to initialize the cluster
     clusterInit = true;
     # use my own domain & kube-vip's virtual IP for the API server

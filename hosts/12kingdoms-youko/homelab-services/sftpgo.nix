@@ -1,11 +1,20 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  mylib,
+  ...
+}:
 let
   user = "sftpgo";
 in
 {
   # Read SFTPGO_DEFAULT_ADMIN_USERNAME and SFTPGO_DEFAULT_ADMIN_PASSWORD from a file
-  systemd.services.sftpgo.serviceConfig = {
-    EnvironmentFile = config.age.secrets."sftpgo.env".path;
+  systemd.services.sftpgo.serviceConfig = lib.mkIf config.services.sftpgo.enable {
+    EnvironmentFile = mylib.requireSecretPath {
+      inherit config;
+      name = "sftpgo.env";
+      consumer = "service sftpgo";
+    };
   };
 
   # Join the shared fileshare group (defined globally in user-group.nix) so

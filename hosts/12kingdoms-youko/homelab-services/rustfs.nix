@@ -1,5 +1,7 @@
 {
   config,
+  lib,
+  mylib,
   ...
 }:
 {
@@ -23,7 +25,13 @@
     };
     # Root credentials (access key = root "user", secret key = password), as a
     # dotenv secret with RUSTFS_ACCESS_KEY / RUSTFS_SECRET_KEY.
-    environmentFile = config.age.secrets."rustfs.env".path;
+    environmentFile = lib.mkIf config.services.rustfs.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "rustfs.env";
+        consumer = "service rustfs";
+      }
+    );
   };
 
   # The data volume lives on the encrypted HDD subvolume; wait for its mount.

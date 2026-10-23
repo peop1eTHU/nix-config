@@ -1,5 +1,6 @@
 {
   mylib,
+  lib,
   pkgs,
   config,
   myvars,
@@ -12,10 +13,14 @@ let
   # repo's desktops/servers, via `modules/base/security.nix`) trust it.
   # Mobile apps do NOT trust a private CA, so any site a phone must reach uses
   # `publicTlsConfig` instead of this one.
-  privateTlsConfig = ''
+  privateTlsConfig = lib.optionalString config.services.caddy.enable ''
     encode zstd gzip
     tls ${mylib.relativeToRoot "certs/ecc-server.crt"} ${
-      config.age.secrets."caddy-ecc-server.key".path
+      mylib.requireSecretPath {
+        inherit config;
+        name = "caddy-ecc-server.key";
+        consumer = "service caddy TLS";
+      }
     } {
       protocols tls1.3 tls1.3
       curves x25519 secp384r1 secp521r1
@@ -203,7 +208,7 @@ in
   # against the Cloudflare-managed `writefor.fun` zone. The token is an agenix
   # environment file holding `CLOUDFLARE_DNS_API_TOKEN=...`. The wildcard is
   # shared by every `publicTlsConfig` vhost, so new services need no new entry.
-  security.acme = {
+  security.acme = lib.mkIf config.services.caddy.enable {
     acceptTerms = true;
     # lego runs as the unprivileged `acme` user by default, which cannot read
     # the root-owned agenix file; run it as root so it can.
@@ -213,7 +218,11 @@ in
       domain = "*.writefor.fun";
       extraDomainNames = [ "writefor.fun" ];
       dnsProvider = "cloudflare";
-      environmentFile = config.age.secrets."cloudflare-dns-api-token".path;
+      environmentFile = mylib.requireSecretPath {
+        inherit config;
+        name = "cloudflare-dns-api-token";
+        consumer = "service caddy ACME certificate renewal";
+      };
       # lego's own propagation checks are unreliable from youko (its resolver
       # never sees the fresh challenge TXT in time), so replace them with a
       # fixed wait; the CA still verifies the record from the public internet.

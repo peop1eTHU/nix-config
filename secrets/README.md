@@ -47,6 +47,44 @@ servers alone breaks the desktops and the recovery key together.
 The one exception is the desktop's own restic repository password (`restic-password-desktop.age`):
 `desktop_keys` alone, because the backup servers must not be able to read desktop data.
 
+## 逐项开关与分组默认值
+
+`modules.secrets.items.<名称>.enable`
+决定某个密文是否部署，桌面／服务器组仅提供这些开关的默认值。显式 `true` 可以在组关闭时单独启用；显式
+`false` 可以屏蔽组内的一项，不需要 `mkForce`。
+
+```nix
+# 在 NixOS/nix-darwin 主机模块中，只部署工作 Git 身份：
+modules.secrets.desktop.enable = false;
+modules.secrets.items."work-gitconfig".enable = true;
+
+# 或者沿用整个桌面组，仅关闭某项：
+modules.secrets.desktop.enable = true;
+modules.secrets.items."rclone.conf".enable = false;
+```
+
+NixOS 的组默认关闭；Darwin 的桌面组默认开启，保持原有五项桌面凭据。`secrets/catalog.nix`
+是路径、默认组、权限与投放位置的清单，`options.nix` 声明开关，`deployment.nix` 仅为实际开启的项生成
+`age.secrets` 和 `/etc/agenix` 映射。文件名含点号的开关必须加引号，例如
+`items."sftpgo.env".enable`。
+
+`desktop-restic-password` 和 `homelab-restic-password` 使用不同密文，但共享运行时名称
+`restic-password`，不能同时开启。Caddy/PostgreSQL 使用同一证书密文，但独立开关和文件 owner 保持不变。`publicKeys`
+不是 age secret，`nushell-secrets.nu` 仍走独立的加密 dotfiles 流程。
+
+独立启用一项不会自动启用
+`nix-access-tokens`；组开启仍按原默认启用公共 token。关闭 token 时 Nix 跳过 include，关闭 work-gitconfig 时 Home
+Manager 不创建对应的悬空链接。服务依赖的 secret 关闭后，必须同时关闭相关消费功能；服务不会偷偷去掉认证或 TLS，配置会明确报缺失依赖。单独声明服务用户拥有的凭据时，仍须创建该服务用户。
+
+agenix 原生的 `age.enable = false` 或 `age.secrets.<name>.enable = false`
+也会关闭实际投放；消费者、`/etc` 映射和 Darwin 权限修复使用同一可用性判断。单独调整
+`age.secrets.<name>.owner/mode`
+时，映射使用合并后的 owner 与权限，不会将收紧后的权限改回清单默认值。默认策略仍保持原有 NixOS/Darwin 差异。
+
+只有开启的项会求值密文路径。实际启用前，先将真实密文提交到私有仓库并更新 `mysecrets`
+锁，再打开开关；文件缺失仍是配置错误，不会生成占位文件。禁用 declaration 不表示历史明文副本、备份已销毁，尤其是持久化的
+`/etc/agenix`，需另行检查路径权限及清理结果，不自动删除用户文件。
+
 ## Decrypted File Permissions
 
 Most secrets in `secrets/nixos.nix` and `secrets/darwin.nix` use one of three shared presets; a few
@@ -58,8 +96,8 @@ set `mode`/`owner` inline:
 | `high_security` | `0500` root     | root-only consumers (services, activation)       |
 | `user_readable` | `0500` `<user>` | anything a Home Manager module or the user reads |
 
-Secrets are gated by `modules.secrets.<group>.enable`, so a secret only exists on hosts in its
-group. A module that consumes it must sit behind the same gate.
+Secrets are gated by `modules.secrets.items.<name>.enable`; group switches supply defaults. A
+consumer must follow the individual secret's availability, not only its old group switch.
 
 Placing a secret under `/etc/agenix/` with `environment.etc` has one trap: setting `mode` makes
 `environment.etc` **copy** the file instead of symlinking it, and the copy is owned by root unless

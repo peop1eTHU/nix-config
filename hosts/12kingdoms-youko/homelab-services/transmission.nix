@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  mylib,
   myvars,
   pkgs,
   ...
@@ -94,7 +95,13 @@ in
 
     # Path to a JSON file to be merged with the settings.
     # Useful to merge a file which is better kept out of the Nix store to set secret config parameters like `rpc-password`.
-    credentialsFile = config.age.secrets."transmission-credentials.json".path;
+    credentialsFile = lib.mkIf config.services.transmission.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "transmission-credentials.json";
+        consumer = "service transmission";
+      }
+    );
 
     # Whether to open the RPC port in the firewall.
     openRPCPort = false;

@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   mylib,
   myvars,
@@ -26,6 +27,13 @@ in
     ../12kingdoms-shoryu/hardware-configuration.nix
     ../12kingdoms-shoryu/preservation.nix
     coreModule
+  ];
+
+  assertions = [
+    {
+      assertion = mylib.secretAvailable config "hdd-luks-crypt-key";
+      message = "Youko HDD auto-unlock requires modules.secrets.items.hdd-luks-crypt-key.enable.";
+    }
   ];
 
   # Back up the preserved tree through a short-lived read-only snapshot, so the
@@ -80,7 +88,13 @@ in
     listenAddress = "127.0.0.1:8000";
     dataDir = "/data/backups/rest-server";
     privateRepos = true;
-    "htpasswd-file" = config.age.secrets."restic-rest-htpasswd".path;
+    "htpasswd-file" = lib.mkIf config.services.restic.server.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "restic-rest-htpasswd";
+        consumer = "service restic REST server on youko";
+      }
+    );
     # expose /metrics for victoriametrics; unauthenticated is fine because the
     # server only listens on loopback
     prometheus = true;

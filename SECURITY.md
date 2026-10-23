@@ -53,6 +53,13 @@ resources are maintained in the separate k8s-gitops repository.
 
 ## Kernel and process baseline
 
+Secrets have per-item deployment switches (`modules.secrets.items.<name>.enable`); the old role
+groups only provide defaults. Disabling a required secret does not disable service authentication or
+TLS: dependent configurations fail explicitly. Optional Nix token includes and work Git identity
+links follow the individual switch. Ciphertext recipients, file owners, and permissions are
+independent controls; disabling deployment does not prove that historical plaintext copies in
+persistent directories or backups have been erased.
+
 The following explicit, overridable baseline is implemented in
 [kernel-hardening.nix](hardening/kernel-hardening.nix), which holds the values; the table below
 summarizes them. It has Linux eval coverage and explicit ARM/RISC-V server imports. Source

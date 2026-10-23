@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  mylib,
+  ...
+}:
 {
   # https://docs.victoriametrics.com/victoriametrics/vmalert/
   services.vmalert.instances."homelab" = {
@@ -40,7 +45,13 @@
     port = 9093;
     webExternalUrl = "http://alertmanager.writefor.fun";
     logLevel = "info";
-    environmentFile = config.age.secrets."alertmanager.env".path;
+    environmentFile = lib.mkIf config.services.prometheus.alertmanager.enable (
+      mylib.requireSecretPath {
+        inherit config;
+        name = "alertmanager.env";
+        consumer = "service alertmanager";
+      }
+    );
     configuration = {
       global = {
         # The smarthost and SMTP sender used for mail notifications.

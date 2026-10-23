@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  mylib,
+  ...
+}:
 {
   ###################################################################################
   #
@@ -21,7 +26,7 @@
 
   system.stateVersion = 5;
 
-  nix.extraOptions = ''
+  nix.extraOptions = lib.mkIf (mylib.secretAvailable config "nix-access-tokens") ''
     # decrypted secret: AI agents must not read it
     !include ${config.age.secrets.nix-access-tokens.path}
   '';

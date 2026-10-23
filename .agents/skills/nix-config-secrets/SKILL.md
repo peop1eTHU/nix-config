@@ -52,13 +52,26 @@ must not get one back.
 3. **Every secret stays decryptable by the desktops.** A recipient set is
    `desktop_keys ++ <the hosts that need it>`; `recovery_key` is a member of `desktop_keys`. The one
    exception is `restic-password-desktop.age`, readable by `desktop_keys` alone.
-4. **A consumer sits behind the same gate as its secret.** A secret declared under
-   `modules.secrets.desktop` only exists on desktops, so only a desktop-gated module may reference
-   it. Desktops and servers are mutually exclusive: `secrets/nixos.nix` asserts that a host never
-   enables `desktop` together with a server group, so a value both sides need takes a deliberate
-   choice rather than enabling both groups.
+4. **A consumer follows the individual secret switch.** Group switches supply defaults for
+   `modules.secrets.items.<name>.enable`, not the final availability. Optional consumers disappear
+   when their item is disabled; required service credentials must fail clearly rather than weaken
+   authentication. Desktop/server group defaults remain mutually exclusive, and the two restic
+   password sources must never both provide the same runtime name.
 5. **Least privilege on the decrypted file.** Pick the narrowest mode that works, and set the owner
    together with the mode.
+
+### 独立开关
+
+`modules.secrets.items.<name>.enable` 是最终的部署开关；desktop/server 组仅提供默认值。单项 `true`
+可独立于组开启，`false` 可覆盖组默认开启。清单与权限在 `secrets/catalog.nix`，开关在
+`options.nix`，投放在 `deployment.nix`。NixOS 默认全关，Darwin 默认桌面五项开启。
+
+消费方要检查实际单项而不是旧组：可选 token include/work Git 链接随单项消失；服务必需凭据用
+`mylib.requireSecretPath` 明确报错，不删除认证配置来绕过缺失。两种 restic 密码分别叫
+`desktop-restic-password` / `homelab-restic-password`，运行时仍为
+`restic-password`，同时开启会失败。固定路径的 LUKS 密钥必须在主机层检查依赖，不给独立 disko 文件增加必需的 NixOS 参数。
+
+新 secret 的顺序仍是密文及收件人 → 锁更新 → 清单/消费者/开关。只重构开关不用修改私有仓库或锁。关闭项不等于销毁持久化目录中的所有历史明文，验证只看元数据，不擅自删除。
 
 ## 1. Where the pieces live
 
@@ -93,9 +106,11 @@ and pushes follow the global git rules.
    plaintext has to come from an interactive session.
 2. Here: `just upp mysecrets` (commits the lock) or `nix flake update mysecrets` (leaves it for you
    to commit). `git diff flake.lock` should show only `mysecrets` moving.
-3. Declare it in `secrets/nixos.nix` or `secrets/darwin.nix` under the right
-   `modules.secrets.<group>` gate, with a mode/owner preset (§4).
-4. Point the consumer at the runtime path, from a module behind the same gate (core rule 4).
+3. Add its path, group defaults, platform and mode/owner policy to `secrets/catalog.nix`; the shared
+   options/deployment modules expose `modules.secrets.items.<name>.enable` and generate declarations
+   only for selected items. Enable the item on the intended host after the lock bump.
+4. Point optional consumers at the runtime path only when `mylib.secretAvailable` is true; required
+   credentials use `mylib.requireSecretPath` and retain the service's existing authentication.
 5. `just test` and `just build-host <host>`, deploy, then verify as in §5.
 
 Changing only a secret's value is steps 1, 2, and the deploy: use `replace` for a full replacement

@@ -1,6 +1,8 @@
 {
   pkgs,
   config,
+  lib,
+  mylib,
   myvars,
   ...
 }:
@@ -32,13 +34,25 @@
         # cdn_url = "https://cdn.jsdelivr.net/npm/grafana@7.5.5";
       };
 
-      security = {
+      security = lib.mkIf config.services.grafana.enable {
         admin_user = myvars.username;
         admin_email = myvars.useremail;
         # Use file provider to read the admin password from a file.
         # https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#file-provider
-        admin_password = "$__file{${config.age.secrets."grafana-admin-password".path}}";
-        secret_key = "$__file{${config.age.secrets."grafana-secret-key".path}}";
+        admin_password = "$__file{${
+          mylib.requireSecretPath {
+            inherit config;
+            name = "grafana-admin-password";
+            consumer = "service grafana";
+          }
+        }}";
+        secret_key = "$__file{${
+          mylib.requireSecretPath {
+            inherit config;
+            name = "grafana-secret-key";
+            consumer = "service grafana";
+          }
+        }}";
       };
       users = {
         allow_sign_up = false;
