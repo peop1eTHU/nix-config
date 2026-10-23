@@ -12,6 +12,7 @@
       "$schema" = "https://starship.rs/config-schema.json";
 
       add_newline = false;
+      format = "$directory$character";
       right_format = "$all";
 
       character = {
