@@ -18,6 +18,15 @@ in
   # Plain nushell in new terminals; tuios stays installed for manual use.
   modules.tuios.autoStart = false;
 
+  # starship draws `➜` itself but its nushell hook only clears the emacs-mode
+  # indicator, so reedline appends its vi defaults (": " / "> ") after it.
+  # Drop the insert-mode one and mark normal mode, since starship's
+  # vimcmd_symbol is not supported under nushell.
+  programs.nushell.extraConfig = lib.mkAfter ''
+    $env.PROMPT_INDICATOR_VI_INSERT = ""
+    $env.PROMPT_INDICATOR_VI_NORMAL = $"(ansi green_bold)N(ansi reset) "
+  '';
+
   xdg.configFile."niri/niri-hardware.kdl".source = ../../../hosts/reminix/niri-hardware.kdl;
 
   # Ghostty 1.3.1 needs OpenGL 4.3; UTM's Core OpenGL backend exposes at most 4.1.
