@@ -1,0 +1,43 @@
+name: Nix format
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.nix"
+      - "flake.lock"
+      - ".github/workflows/fmt.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.nix"
+      - "flake.lock"
+      - ".github/workflows/fmt.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  nixfmt:
+    name: nixfmt --check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Install nix
+        uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31
+        with:
+          install_url: https://nixos.org/nix/install
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            experimental-features = nix-command flakes
+      # Take nixfmt from the nixpkgs revision pinned in flake.lock, so CI and
+      # `just fmt` agree, without evaluating this flake (its private inputs are
+      # not reachable from CI).
+      - name: Check formatting
+        run: |
+          rev=$(jq -r '.nodes.nixpkgs.locked.rev' flake.lock)
+          find . -name '*.nix' -not -path './.git/*' -print0 \
+            | xargs -0 nix run "github:NixOS/nixpkgs/$rev#nixfmt" -- --check
