@@ -54,6 +54,11 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
+  # The Mac maps its physical Caps Lock to Control before UTM sees it, so the
+  # shared keyd swap would leave Esc as the only (and unwanted) Caps Lock.
+  # Keep Esc as Esc; the shared capslock overload is left as is.
+  services.keyd.keyboards.default.settings.main.esc = lib.mkForce "esc";
+
   networking = {
     inherit hostName;
 
