@@ -10,8 +10,13 @@
     settings = {
       # Get editor completions based on the config schema
       "$schema" = "https://starship.rs/config-schema.json";
+
+      add_newline = false;
+      right_format = "$all";
+
       character = {
         success_symbol = "[➜](bold green)";
+        vicmd_symbol = "[N](bold green)";
         error_symbol = "[➜](bold red)";
       };
       # I never rely on the defaults, so this module is useless to me—disabled.
@@ -23,7 +28,7 @@
         symbol = "⛵";
         disabled = false;
       };
-      os.disabled = false;
+      os.disabled = true;
     };
   };
 }
