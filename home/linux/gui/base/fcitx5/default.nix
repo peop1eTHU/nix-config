@@ -34,9 +34,9 @@
       qt6Packages.fcitx5-configtool # GUI for fcitx5
       fcitx5-gtk # gtk im module
 
-      # Chinese: the flypy (小鹤音形) fcitx5-rime addon is wired in
-      # home/base/gui/rime/default.nix, which is also where the rime-data-flypy
-      # package is resolved. fcitx5-chinese-addons is not used.
+      # Chinese: the fcitx5-rime addon and its schema data (jidian wubi by
+      # default, or flypy) are wired in home/base/gui/rime/default.nix through
+      # `modules.desktop.rime.schema`. fcitx5-chinese-addons is not used.
 
       # Japanese
       # ctrl-i / F7 - convert to takakana
