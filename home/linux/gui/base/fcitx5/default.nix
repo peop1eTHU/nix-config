@@ -4,8 +4,9 @@
   ...
 }:
 {
-  catppuccin.fcitx5.enable = false;
+  # catppuccin.fcitx5.enable = false;
   xdg.configFile = {
+    "fcitx5".recursive = true;
     "fcitx5/profile" = {
       source = ./profile;
       # every time fcitx5 switch input method, it will modify ~/.config/fcitx5/profile,
