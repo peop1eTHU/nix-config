@@ -227,6 +227,7 @@ binds {
 
     // Native Noctalia screenshots; output/annotation policy lives in the noctalia config.
     Print { spawn "noctalia" "msg" "screenshot-region"; }
+    Mod+Shift+S { spawn "noctalia" "msg" "screenshot-region"; }
     Ctrl+Print { spawn "noctalia" "msg" "screenshot-fullscreen"; }
     Alt+Print { spawn "noctalia" "msg" "screenshot-fullscreen" "pick"; }
 
