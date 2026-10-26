@@ -5,6 +5,7 @@
 }:
 {
   # catppuccin.fcitx5.enable = false;
+  catppuccin.fcitx5.enableRounded = true;
   xdg.configFile = {
     "fcitx5".recursive = true;
     "fcitx5/profile" = {
