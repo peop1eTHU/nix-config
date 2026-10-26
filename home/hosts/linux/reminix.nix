@@ -71,4 +71,8 @@ in
   # The SSH identity used for GitHub is the host key half that lives on the Mac;
   # keep the same per-host filename convention as the physical hosts.
   programs.ssh.settings."github.com".IdentityFile = "${config.home.homeDirectory}/.ssh/${hostName}";
+  programs.ssh.settings."gitlab.basemind.com" = {
+    User = "git";
+    IdentityFile = "${config.home.homeDirectory}/.ssh/${hostName}";
+  };
 }
