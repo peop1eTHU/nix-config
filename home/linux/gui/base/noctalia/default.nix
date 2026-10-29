@@ -30,9 +30,11 @@
     pkgs.gpu-screen-recorder # recoding screen
   ]);
 
-  home.file."Pictures/Wallpapers" = {
-    source = wallpapers;
-    recursive = true;
+  home.file."Pictures/Wallpapers".source = pkgs.symlinkJoin {
+    name = "wallpapers-with-transparent";
+    paths = [ wallpapers ];
+    postBuild = ''
+      ln -s ${./transparent.png} "$out/transparent.png"
+    '';
   };
-  home.file."Pictures/Wallpapers/transparent.png".source = ./transparent.png;
 }
