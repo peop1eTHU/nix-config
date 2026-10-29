@@ -33,7 +33,7 @@
             {
                 "id": "aqua-whisper",
                 "type": "command",
-                "command": "/home/ryan/.config/vinput/aqua-asr-provider",
+                "command": "vinput-aqua-asr-provider",
                 "env": {
                     "VINPUT_ASR_URL": "http://192.168.5.101:18080/v1/audio/transcriptions"
                 },

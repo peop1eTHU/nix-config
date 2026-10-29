@@ -76,14 +76,14 @@ enable_builtin_templates = false
 enable_community_templates = false
 
 [wallpaper]
-directory = "/home/ryan/Pictures/Wallpapers"
+directory = "~/Pictures/Wallpapers"
 
 [wallpaper.automation]
 enabled = true
 interval_seconds = 600
 
 [wallpaper.default]
-path = "/home/ryan/Pictures/Wallpapers/rolling-girls_lalala.png"
+path = "~/Pictures/Wallpapers/rolling-girls_lalala.png"
 
 [location]
 address = "Changsha"

@@ -8,6 +8,7 @@
 let
   cfg = config.modules.desktop.vinput;
   vinput = inputs.fcitx5-vinput.packages.${pkgs.stdenv.hostPlatform.system}.fcitx5-vinput;
+  asrProvider = pkgs.writers.writePython3 "vinput-aqua-asr-provider" { } ./aqua-provider.py;
 in
 {
   options.modules.desktop.vinput.enable = lib.mkEnableOption "Fcitx5 Vinput voice input";
@@ -38,11 +39,7 @@ in
       force = true;
     };
 
-    # The OpenAI-transcription client vinput runs as a provider. config.json points at this
-    # absolute path, so the two must stay in sync.
-    xdg.configFile."vinput/aqua-asr-provider".source =
-      pkgs.writers.writePython3 "vinput-aqua-asr-provider" { }
-        ./aqua-provider.py;
+    xdg.configFile."vinput/aqua-asr-provider".source = asrProvider;
 
     systemd.user.services.vinput-daemon = {
       Unit = {
@@ -54,6 +51,11 @@ in
         Type = "dbus";
         BusName = "org.fcitx.Vinput";
         ExecStart = "${vinput}/bin/vinput-daemon";
+        Environment = [
+          "PATH=${
+            lib.makeBinPath [ asrProvider ]
+          }:${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+        ];
 
         # Provider keys are `{{env.*}}` references the daemon resolves from its own environment,
         # and a systemd user service inherits neither the interactive shell's environment nor any

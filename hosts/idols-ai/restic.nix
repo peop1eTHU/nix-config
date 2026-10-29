@@ -2,8 +2,12 @@
   config,
   lib,
   mylib,
+  myvars,
   ...
 }:
+let
+  homeDirectory = config.users.users.${myvars.username}.home;
+in
 {
   # Be specific here and keep `exclude` minimal: an allowlist of the
   # irreplaceable directories beats backing up a broad tree and excluding half
@@ -26,16 +30,16 @@
     );
 
     paths = [
-      "/home/ryan/Documents"
-      "/home/ryan/work"
-      "/home/ryan/Pictures"
-      "/home/ryan/codes"
-      "/home/ryan/src"
-      "/home/ryan/nix-config"
-      "/home/ryan/.local/state"
+      "${homeDirectory}/Documents"
+      "${homeDirectory}/work"
+      "${homeDirectory}/Pictures"
+      "${homeDirectory}/codes"
+      "${homeDirectory}/src"
+      "${homeDirectory}/nix-config"
+      "${homeDirectory}/.local/state"
       # dsh (DeepSeek Harness) state: session transcripts, workspace storages,
       # profiles. Its credentials file is excluded below.
-      "/home/ryan/.dsh"
+      "${homeDirectory}/.dsh"
     ];
 
     # anything bigger than this is a re-downloadable artifact (models, datasets,
