@@ -79,7 +79,7 @@ enable_community_templates = false
 directory = "~/Pictures/Wallpapers"
 
 [wallpaper.automation]
-enabled = true
+enabled = false
 interval_seconds = 600
 
 [wallpaper.default]
