@@ -155,3 +155,7 @@ network_speed_compact = true
 # long for the bar. Hover tooltip still shows the full network name.
 [widget.network]
 show_label = false
+
+[widget.workspaces]
+style = "minimal"
+hide_when_empty = true
