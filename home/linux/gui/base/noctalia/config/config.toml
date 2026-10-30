@@ -86,7 +86,8 @@ interval_seconds = 600
 path = "~/Pictures/Wallpapers/rolling-girls_lalala.png"
 
 [location]
-address = "Changsha"
+auto_locate = false
+address = "Beijing"
 
 [weather]
 enabled = true
