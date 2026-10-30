@@ -1,16 +1,20 @@
 {
   lib,
   outputs,
+  myvars,
   ...
 }:
 let
   cfg = outputs.nixosConfigurations.ai-niri.config;
   niriHardware = builtins.readFile ../../../../hosts/idols-ai/niri-hardware.kdl;
-  preserved = cfg.preservation.preserveAt."/persistent".users.ryan.directories;
+  preserved = cfg.preservation.preserveAt."/persistent".users.${myvars.username}.directories;
   privatelyPreserved =
     path:
     lib.any (
-      d: d.directory == cfg.users.users.ryan.home + "/" + path && d.how == "bindmount" && d.mode == "0700"
+      d:
+      d.directory == cfg.users.users.${myvars.username}.home + "/" + path
+      && d.how == "bindmount"
+      && d.mode == "0700"
     ) preserved;
   # Compare package names: `builtins.elem "intel-media-driver"` compares a string
   # against derivations and passes even when the driver is installed.
@@ -35,7 +39,7 @@ in
   # The same change dropped the VA-API override, which only an Intel GPU could serve.
   noIntelLibvaOverride = !(cfg.environment.sessionVariables ? LIBVA_DRIVER_NAME);
   noPrimeOffload = !cfg.hardware.nvidia.prime.offload.enable;
-  sunshineUserHasInputAccess = builtins.elem "input" cfg.users.users.ryan.extraGroups;
+  sunshineUserHasInputAccess = builtins.elem "input" cfg.users.users.${myvars.username}.extraGroups;
   sunshineHasSysAdmin = cfg.services.sunshine.capSysAdmin;
   sunshineUsesWlrCapture = cfg.services.sunshine.settings.capture;
   sunshineStartsAfterNiri = builtins.elem "niri.service" cfg.systemd.user.services.sunshine.after;

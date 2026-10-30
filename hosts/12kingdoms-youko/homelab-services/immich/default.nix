@@ -30,7 +30,7 @@ in
     machine-learning.enable = true;
 
     settings = {
-      server.externalDomain = "https://immich.writefor.fun";
+      server.externalDomain = "https://immich.homelab.example";
       # Skip Immich's outbound version checks.
       newVersionCheck.enabled = false;
     };

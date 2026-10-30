@@ -69,9 +69,13 @@ only delete inactive duplicates.
 
 ### WA-042 — reminix：Ghostty 单应用软件渲染
 
-`home/hosts/linux/reminix.nix` 对 Ghostty 包装 `LIBGL_ALWAYS_SOFTWARE=1`。实测 UTM 默认 ANGLE Metal/virgl 仅提供桌面 OpenGL 2.1；UTM 5.0.8 的 Apple Core OpenGL 后端官方支持 4.1，而 Ghostty 1.3.1 要求 4.3。Kitty 和 niri 不使用此变量。
+`home/hosts/linux/reminix.nix` 对 Ghostty 包装 `LIBGL_ALWAYS_SOFTWARE=1`。实测 UTM 默认 ANGLE
+Metal/virgl 仅提供桌面 OpenGL 2.1；UTM 5.0.8 的 Apple Core OpenGL 后端官方支持 4.1，而 Ghostty
+1.3.1 要求 4.3。Kitty 和 niri 不使用此变量。
 
-移除条件：UTM 的硬件路径实际提供 Ghostty 所需的 OpenGL 功能，并且窗口启动、绘制测试通过；更新 UTM、Mesa 或 Ghostty 时复测。不要用 `MESA_GL_VERSION_OVERRIDE` 伪报版本。复测与回退步骤见 `hosts/reminix/README.md`。添加日期：2026-10-22，状态：active。
+移除条件：UTM 的硬件路径实际提供 Ghostty 所需的 OpenGL 功能，并且窗口启动、绘制测试通过；更新 UTM、Mesa 或 Ghostty 时复测。不要用
+`MESA_GL_VERSION_OVERRIDE` 伪报版本。复测与回退步骤见
+`hosts/reminix/README.md`。添加日期：2026-10-22，状态：active。
 
 A known limitation with no fix yet.
 
@@ -95,6 +99,10 @@ An unfinished feature or gap.
 | WA-027 | NFS golden store `no_root_squash` — `hosts/12kingdoms-youko/nfs-golden.nix` | the existing PVC subdirectories are root-owned, so enabling `root_squash` would break running workloads until they are migrated; the CSI node plugin is hostNetwork and sources from the allowlisted node IPs                                                                                                            | Drop when the PVC subdirectories are migrated and `root_squash` is enabled | 2026-10-07 | next maintenance window | active |
 
 ## Related
+
+Inherited host templates use `homelab.example` and keep Caddy, desktop remote backups, remote
+builds, and outbound notifications opt-in. Supply the intended addresses, verified host keys,
+recipients, and TLS certificates before enabling those templates.
 
 - Security architecture, threat model and audit status: [SECURITY.md](./SECURITY.md).
 - Unmerged **nixpkgs** PRs are carried via the `nixpkgs-patched` input and the

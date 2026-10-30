@@ -9,7 +9,7 @@ description:
 # Working with secrets
 
 Secrets are age-encrypted files in the private repository `~/codes/nix-secrets`
-(`git@github.com:ryan4yin/nix-secrets.git`), pulled in as the `mysecrets` flake input and declared
+(`git@github.com:peop1eTHU/nix-secrets.git`), pulled in as the `mysecrets` flake input and declared
 here in `secrets/nixos.nix` and `secrets/darwin.nix`. No secret value or ciphertext is ever stored
 in this public repository.
 
@@ -76,7 +76,7 @@ must not get one back.
 ## 1. Where the pieces live
 
 - Recipient list, encrypted files, `agenix` CLI: `~/codes/nix-secrets` (private;
-  `git@github.com:ryan4yin/nix-secrets.git`)
+  `git@github.com:peop1eTHU/nix-secrets.git`)
 - The pinned revision of that repository: `flake.lock`, input `mysecrets`
 - Declaration (file, mode/owner, `/etc` copy): `secrets/nixos.nix`, `secrets/darwin.nix`
 - Which host gets which group: `modules.secrets.<group>.enable` in `outputs/<system>/src/<name>.nix`

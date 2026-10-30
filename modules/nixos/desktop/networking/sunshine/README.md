@@ -21,7 +21,7 @@ minor GPU and memory overhead.
 Options:
 
 ```text
--u USER       session user (defaults to $SUDO_USER, else ryan)
+-u USER       session user (defaults to $SUDO_USER; required when unset)
 -t TTY        tty device, for example /dev/tty2
 -c COMMAND    Wayland session command (defaults to niri --session)
 -f, --force   replace an existing Niri session without confirmation
@@ -54,9 +54,9 @@ Client usage, from the Moonlight client (requires key-based SSH to the host and 
 the client):
 
 ```bash
-wl-paste -n | ssh ryan@ai "nu ~/nix-config/modules/nixos/desktop/networking/sunshine/clipboard.nu"
+wl-paste -n | ssh remi@ai "nu ~/nix-config/modules/nixos/desktop/networking/sunshine/clipboard.nu"
 # or, from this repo:
-nu ./send-clipboard.nu ryan@ai
+nu ./send-clipboard.nu remi@ai
 ```
 
 `--verify` makes the host script read the clipboard back and fail on mismatch. An empty input, or a

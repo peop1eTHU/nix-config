@@ -4,8 +4,8 @@ NixOS aarch64 guest running under UTM on an Apple Silicon Mac, with the QEMU bac
 `virtio-gpu-gl-pci` for OpenGL acceleration (niri needs it).
 
 - 8 GiB RAM, 6 vCPUs, 64 GiB virtio disk (`/dev/vda`), UEFI boot
-- Host name and flake output name are both `reminix`, so `just niri`-style deployment and the
-  `hostname` eval test need no special case.
+- Host name and flake output name are both `reminix`; deploy with `just local` or
+  `sudo nixos-rebuild switch --flake .#reminix`.
 - Secrets: `secrets/nixos.nix` is imported, but every group is off
   (`modules.secrets.*.enable = false`), so no agenix secret decrypts yet.
 

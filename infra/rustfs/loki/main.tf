@@ -5,7 +5,7 @@ terraform {
     key    = "homelab/rustfs/terraform.tfstate"
     region = "us-east-1"
     endpoints = {
-      s3 = "https://s3.writefor.fun"
+      s3 = "https://s3.homelab.example"
     }
 
     # pass access key & secret via:
@@ -42,6 +42,6 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    s3 = "https://s3.writefor.fun"
+    s3 = "https://s3.homelab.example"
   }
 }

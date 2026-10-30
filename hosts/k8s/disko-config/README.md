@@ -6,7 +6,7 @@
 # enter a shell with git/vim/ssh/gnumake available
 nix-shell -p git vim gnumake openssh
 # clone this repository
-git clone https://github.com/ryan4yin/nix-config.git
+git clone https://github.com/peop1eTHU/nix-config.git
 
 cd nix-config
 
@@ -23,7 +23,7 @@ systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/<encrypted-disk-part
 sudo nixos-install --root /mnt --no-root-password --show-trace --verbose --flake .#shoryu
 
 # enter into the installed system, check password & users
-# `su ryan` => `sudo -i` => enter ryan's password => successfully login
+# `su remi` => `sudo -i` => enter remi's password => successfully login
 # if login failed, check the initial password you set in vars/default.nix, and try again
 nixos-enter
 
@@ -35,7 +35,7 @@ nixos-enter
 mkdir -p /persistent/etc
 mv /etc/machine-id /persistent/etc/
 mv /etc/ssh /persistent/etc/
-mkdir -p /persistent/home/ryan
-chown -R ryan:ryan /persistent/home/ryan
+mkdir -p /persistent/home/remi
+chown -R remi:remi /persistent/home/remi
 
 ```

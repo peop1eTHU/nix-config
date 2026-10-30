@@ -28,7 +28,7 @@ let
     );
     # use my own domain & kube-vip's virtual IP for the API server
     # so that the API server can always be accessed even if some nodes are down
-    masterHost = "test-cluster-1.writefor.fun";
+    masterHost = "test-cluster-1.homelab.example";
     metricsBindAddress = myvars.networking.hostsAddr.${hostName}.ipv4;
     # Workloads run on the worker nodes; they do not use a reserved worker-role label.
     nodeTaints = [ "node-role.kubernetes.io/control-plane:NoSchedule" ];

@@ -37,8 +37,6 @@
       # numtide's cache (niks3), which serves the prebuilt packages of the
       # numtide/llm-agents.nix flake input used for the AI agent CLIs.
       "https://cache.numtide.com"
-      # my own cache server, currently not used.
-      # "https://ryan4yin.cachix.org"
     ];
 
     # WARNING: every key here trusts *everything* that key signs. Add one only
@@ -46,7 +44,6 @@
     # a third party the ability to ship you arbitrary store paths.
     trusted-public-keys = [
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      "ryan4yin.cachix.org-1:Gbk27ZU5AYpGS9i3ssoLlwdvMIh0NxG0w8it/cv9kbU="
     ];
     builders-use-substitutes = true;
   };

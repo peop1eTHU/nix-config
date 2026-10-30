@@ -80,17 +80,6 @@ in
       ];
     policy = userReadable;
   };
-  "ryan4yin-gpg-subkeys.priv.age" = shared // {
-    file = "desktop/ryan4yin-gpg-subkeys-2024-01-27.priv.age.age";
-    policy = {
-      mode = "0000";
-      owner = "root";
-    };
-    etc = {
-      name = "ryan4yin-gpg-subkeys.priv.age";
-      mode = "0000";
-    };
-  };
   "rclone.conf" = shared // {
     file = "desktop/rclone.conf.age";
     policy = rootOnly;
@@ -157,14 +146,6 @@ in
     file = "server/k3s-test-1-token.age";
     groups = kubernetes;
     policy = rootOnly;
-  };
-  "caddy-ecc-server.key" = {
-    file = "certs/ecc-server.key.age";
-    groups = webserver;
-    policy = {
-      mode = "0400";
-      owner = "caddy";
-    };
   };
   "postgres-ecc-server.key" = {
     file = "certs/ecc-server.key.age";

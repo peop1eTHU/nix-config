@@ -54,11 +54,11 @@ passwd: password updated successfully
 [root@nixos:~]# ip addr show wlan0
 2: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
     link/ether 9c:3e:53:6e:ef:8d brd ff:ff:ff:ff:ff:ff
-    inet 192.168.5.13/24 brd 192.168.5.255 scope global dynamic noprefixroute wlan0
+    inet 192.0.2.13/24 brd 192.0.2.255 scope global dynamic noprefixroute wlan0
 
 # Change default router(if need)
-ip route del default via 192.168.5.1
-ip route add default via 192.168.5.178
+ip route del default via 192.0.2.1
+ip route add default via 192.0.2.178
 ```
 
 The nixos installer has sshd service enabled by default, so we can now connect to it via ssh
@@ -226,7 +226,7 @@ Clone this repository:
 nix-shell -p git neovim --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store"
 
 # clone this repository
-git clone https://github.com/ryan4yin/nix-config.git
+git clone https://github.com/peop1eTHU/nix-config.git
 ```
 
 Then, generate the NixOS configuration:
@@ -249,7 +249,7 @@ cd ~/nix-config/nixos-installer/
 rm -rf /mnt/etc
 
 # install nixos
-# NOTE: --no-root-password leaves root locked; log in as ryan with the password whose hash is
+# NOTE: --no-root-password leaves root locked; log in as remi with the password whose hash is
 # `initialHashedPassword` in vars/default.nix
 nixos-install --root /mnt --flake .#shoukei --no-root-password --show-trace --verbose # install-1
 
@@ -258,7 +258,7 @@ nixos-install --root /mnt --flake .#shoukei --no-root-password --show-trace --ve
 nixos-install --root /mnt --flake .#shoukei --no-root-password --show-trace --verbose --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store  https://cache.nixos.org/" # install-2
 
 # enter into the installed system, check password & users
-# `su ryan` => `sudo -i` => enter ryan's password => successfully login
+# `su remi` => `sudo -i` => enter remi's password => successfully login
 # if login failed, check that the password you typed is the one hashed by
 # `initialHashedPassword` in vars/default.nix, and try again
 nixos-enter
@@ -283,8 +283,8 @@ rm ~/nix-config/hosts/12kingdoms-shoukei/hardware-configuration-new.nix
 
 # NOTE: `cat README.shoukei.md | grep git-1 > git-1.sh` to generate this script
 # commit the changes after installing nixos successfully
-git config --global user.email "ryan4yin@linux.com"   # git-1
-git config --global user.name "Ryan Yin"              # git-1
+git config --global user.email "user@example.org"   # git-1
+git config --global user.name "Remi"              # git-1
 git commit -am "feat: update hardware-configuration"
 
 # copy our configuration to the installed file system
@@ -307,7 +307,7 @@ that the new machine can pull my private secrets repo:
 
 ```bash
 # 1. Generate a new SSH key with a strong passphrase
-ssh-keygen -t ed25519 -a 256 -C "ryan@shoukei" -f ~/.ssh/shoukei
+ssh-keygen -t ed25519 -a 256 -C "remi@shoukei" -f ~/.ssh/shoukei
 # 2. Add the ssh key to the ssh-agent, so that nixos-rebuild can use it to pull my private secrets repo.
 ssh-add ~/.ssh/shoukei
 ```
@@ -320,7 +320,7 @@ After all these steps, we can finally deploy the main flake's NixOS configuratio
 
 ```bash
 sudo mv /etc/nixos ~/nix-config
-sudo chown -R ryan:ryan ~/nix-config
+sudo chown -R remi:remi ~/nix-config
 
 cd ~/nix-config
 
@@ -332,4 +332,4 @@ Secure Boot is not configured for `shoukei` (Apple Silicon, Asahi firmware). The
 setup for `ai`, kept here as a reference:
 [lanzaboote - Quick Start](https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md)
 and
-[hosts/idols-ai/secureboot.nix](https://github.com/ryan4yin/nix-config/blob/main/hosts/idols-ai/secureboot.nix)
+[hosts/idols-ai/secureboot.nix](https://github.com/peop1eTHU/nix-config/blob/main/hosts/idols-ai/secureboot.nix)

@@ -1,12 +1,5 @@
 {
-  description = "Ryan Yin's nix configuration for both NixOS & macOS";
-
-  ##################################################################################################################
-  #
-  # Want to know Nix in details? Looking for a beginner-friendly tutorial?
-  # Check out https://github.com/ryan4yin/nixos-and-flakes-book !
-  #
-  ##################################################################################################################
+  description = "Remi's NixOS and macOS configuration";
 
   outputs = inputs: import ./outputs inputs;
 
@@ -32,13 +25,13 @@
     # input together with that consumer.
     nixpkgs-2505.url = "github:nixos/nixpkgs/nixos-25.05";
 
-    # ryan4yin/nixpkgs fork for the `.agents/skills/nixpkgs-patched` workflow. It
+    # Upstream nixpkgs fork for the `.agents/skills/nixpkgs-patched` workflow. It
     # currently carries no patches (see WORKAROUNDS.md), but `pkgs-patched` is
     # wired in outputs/default.nix so a temporary carry needs no flake edit.
     nixpkgs-patched.url = "github:ryan4yin/nixpkgs/nixos-unstable-patched";
     # get some latest packages from the master branch
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    # ryan4yin/nixpkgs branch carrying NixOS/nixpkgs#570230 (the Intel NPU
+    # Upstream nixpkgs branch carrying NixOS/nixpkgs#570230 (the Intel NPU
     # compiler and the driver change that loads it). Only aquamarine consumes it,
     # through `pkgs-npu`; drop it once the PR merges.
     nixpkgs-npu.url = "github:ryan4yin/nixpkgs/openvino-npu-compiler";
@@ -168,7 +161,7 @@
     # exposes an `x86pkgs` set plus Steam/Wine launchers. Used by shoukei; see
     # hosts/12kingdoms-shoukei and WORKAROUNDS.md (WA-021).
     #
-    # Pinned to our fork of rowanG077/nix-x86-on-aarch64 at the reviewed commit
+    # Pinned to an upstream fork of rowanG077/nix-x86-on-aarch64 at the reviewed commit
     # 5d69793a. To update, fetch upstream into the fork, review the new commits,
     # then bump the rev here deliberately. Do not track the fork's default branch:
     # a GitHub "Sync fork" fast-forward would pull unreviewed changes.
@@ -185,7 +178,7 @@
     };
 
     # Global agent skills, linked into ~/.agents/skills by
-    # home/base/tui/agents/skills.nix. The ryan4yin forks track main; a fork sync
+    # home/base/tui/agents/skills.nix. These upstream forks track main; a fork sync
     # pulls upstream changes, so review the lock diff before deploying it.
     mattpocock-skills = {
       url = "github:ryan4yin/mattpocock-skills";
@@ -204,7 +197,7 @@
       url = "github:DietrichGebert/ponytail/v5.1.0";
       flake = false;
     };
-    ########################  My own repositories  #########################################
+    ########################  Private and upstream repositories  #########################################
 
     # my private secrets, it's a private repository, you need to replace it with your own.
     # use ssh protocol to authenticate via ssh-agent/ssh-key, and shallow clone to save time
@@ -218,13 +211,13 @@
       flake = false;
     };
 
-    # my wallpapers
+    # Upstream wallpapers
     wallpapers = {
       url = "github:ryan4yin/wallpapers";
       flake = false;
     };
 
-    # Personal NUR packages.
+    # Upstream NUR packages.
     nur-ryan4yin = {
       url = "github:ryan4yin/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";

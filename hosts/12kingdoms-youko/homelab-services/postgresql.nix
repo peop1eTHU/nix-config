@@ -64,7 +64,8 @@ in
 
       # ssl
       ssl = true;
-      ssl_cert_file = "${mylib.relativeToRoot "certs/ecc-server.crt"}";
+      # Supply a certificate for this server before enabling the host template.
+      ssl_cert_file = "/var/lib/postgresql/server.crt";
       ssl_key_file = lib.mkIf config.services.postgresql.enable (
         mylib.requireSecretPath {
           inherit config;

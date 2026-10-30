@@ -5,7 +5,7 @@
     enable = true;
     user = "gitea";
     group = "gitea";
-    appName = "Ryan Yin's Gitea Service";
+    appName = "Remi's Gitea Service";
     lfs.enable = true;
     # Enable a timer that runs gitea dump to generate backup-files of the current gitea database and repositories.
     dump = {
@@ -22,8 +22,8 @@
         PROTOCOL = "http";
         HTTP_PORT = 3301;
         HTTP_ADDR = "127.0.0.1";
-        DOMAIN = "git.writefor.fun";
-        ROOT_URL = "https://git.writefor.fun/";
+        DOMAIN = "git.homelab.example";
+        ROOT_URL = "https://git.homelab.example/";
       };
       # one of "Trace", "Debug", "Info", "Warn", "Error", "Critical"
       log.LEVEL = "Info";
@@ -47,7 +47,7 @@
       mailer = {
         ENABLED = true;
         MAILER_TYPE = "sendmail";
-        FROM = "do-not-reply@writefor.fun";
+        FROM = "do-not-reply@homelab.example";
         SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
       };
       other = {
@@ -72,7 +72,7 @@
   #     # provide native execution on the host
   #     "native:host"
   #   ];
-  #   gitea = "http://git.writefor.fun";
+  #   gitea = "http://git.homelab.example";
   #   # Path to an environment file,
   #   # containing the TOKEN environment variable,
   #   # that holds a token to register at the configured Gitea instance.

@@ -1,4 +1,5 @@
 {
+  myvars,
   ...
 }:
 {
@@ -35,7 +36,7 @@
     victoriametrics-data.gid = 976;
     uinput.gid = 977;
     sftpgo.gid = 981;
-    ryan.gid = 982;
+    ${myvars.username}.gid = 982;
     rustfs.gid = 983;
     redis-shared.gid = 984;
     postgres-exporter.gid = 985;

@@ -8,7 +8,7 @@
 let
   cfg = config.modules.desktop.vinput;
   vinput = inputs.fcitx5-vinput.packages.${pkgs.stdenv.hostPlatform.system}.fcitx5-vinput;
-  asrProvider = pkgs.writers.writePython3 "vinput-aqua-asr-provider" { } ./aqua-provider.py;
+  asrProvider = pkgs.writers.writePython3 "vinput-local-asr-provider" { } ./asr-provider.py;
 in
 {
   options.modules.desktop.vinput.enable = lib.mkEnableOption "Fcitx5 Vinput voice input";
@@ -39,7 +39,7 @@ in
       force = true;
     };
 
-    xdg.configFile."vinput/aqua-asr-provider".source = asrProvider;
+    xdg.configFile."vinput/local-asr-provider".source = asrProvider;
 
     systemd.user.services.vinput-daemon = {
       Unit = {
@@ -59,9 +59,8 @@ in
 
         # Provider keys are `{{env.*}}` references the daemon resolves from its own environment,
         # and a systemd user service inherits neither the interactive shell's environment nor any
-        # app's env file. No `-` prefix: a host without the file is misconfigured, not
-        # half-working, and the daemon logs "unset or empty" without it.
-        EnvironmentFile = "%h/.secrets/nushell-secrets.env";
+        # app's env file. Local providers work without this optional cloud credential file.
+        EnvironmentFile = "-%h/.secrets/nushell-secrets.env";
 
         Restart = "on-failure";
         RestartSec = 3;

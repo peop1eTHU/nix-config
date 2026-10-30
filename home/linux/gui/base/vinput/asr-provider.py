@@ -1,4 +1,4 @@
-"""vinput ASR provider: send recorded PCM to the aquamarine Whisper service.
+"""vinput ASR provider: send recorded PCM to the configured Whisper API.
 
 vinput pipes raw PCM (S16_LE, mono, 16 kHz) to stdin and reads the transcript
 from stdout. The service speaks the OpenAI transcription API, so the PCM is

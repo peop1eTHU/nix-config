@@ -41,11 +41,11 @@ in
       #   - /var/lib/docker/, /var/lib/containers/ and /var/lib/kubelet/ → too much overlay/tmpfs mounts,
       #     often EACCES (strict perms, namespaces) → false alerts
       # Exclude user bind mounts:
-      #   - /home/ryan/.+ → bind-mounted from /persistent (NixOS tmpfs-root setup),
+      #   - the user's home → bind-mounted from /persistent (NixOS tmpfs-root setup),
       #     monitoring /persistent is sufficient
       # Note: ^(/|/persistent/) prefix ensures both root-level and
       #       /persistent-prefixed paths (used in NixOS's tmpfs-as-root setup) are excluded.
-      "--collector.filesystem.mount-points-exclude=^(/|/persistent/)(dev|proc|sys|run/credentials/.+|run/user/.+|var/lib/docker/.+|var/lib/containers/.+|var/lib/kubelet/.+|home/ryan/.+)($|/)"
+      "--collector.filesystem.mount-points-exclude=^(/|/persistent/)(dev|proc|sys|run/credentials/.+|run/user/.+|var/lib/docker/.+|var/lib/containers/.+|var/lib/kubelet/.+|home/${lib.escapeRegex myvars.username}/.+)($|/)"
     ];
   };
 

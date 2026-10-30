@@ -11,7 +11,7 @@ let
   mediaDir = "/data/fileshare/public";
 
   # Public URL, written into network.xml so clients get a reachable address.
-  domain = "jellyfin.writefor.fun";
+  domain = "jellyfin.homelab.example";
 in
 {
   # Read access to the Transmission downloads (owned by group `fileshare`) and

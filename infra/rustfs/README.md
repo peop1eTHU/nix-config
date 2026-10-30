@@ -1,8 +1,8 @@
 # RustFS
 
-RustFS replaced the retired MinIO at `s3.writefor.fun` (console: `s3-console.writefor.fun`). The
-service is declared in nix-config on the youko host; this directory manages its buckets/lifecycle
-and documents the IAM setup.
+RustFS replaced the retired MinIO at `s3.homelab.example` (console: `s3-console.homelab.example`).
+The service is declared in nix-config on the youko host; this directory manages its
+buckets/lifecycle and documents the IAM setup.
 
 ## Installing `rc`
 
@@ -18,7 +18,7 @@ to `/run/agenix/rustfs.env` (variables `RUSTFS_ACCESS_KEY` / `RUSTFS_SECRET_KEY`
 
 ```bash
 set -a; . <(sudo cat /run/agenix/rustfs.env); set +a
-rc alias set rustfs https://s3.writefor.fun "$RUSTFS_ACCESS_KEY" "$RUSTFS_SECRET_KEY"
+rc alias set rustfs https://s3.homelab.example "$RUSTFS_ACCESS_KEY" "$RUSTFS_SECRET_KEY"
 ```
 
 Sourcing the file is a deliberate exception to the rule against reading decrypted secrets: `cat`

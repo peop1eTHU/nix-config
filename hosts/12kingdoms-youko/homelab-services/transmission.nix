@@ -17,7 +17,7 @@ let
   # a default route at the main router, so peers can reach it and it can resolve
   # real addresses without going through the proxy.
   netns = "transmission";
-  nsIp = "192.168.5.118";
+  nsIp = "192.0.2.118";
   hostVeth = "tr-hveth";
   nsVeth = "tr-nveth";
 
@@ -143,7 +143,7 @@ in
       # Comma-delimited list of domain names.
       # Wildcards allowed using '*'. Example: "*.foo.org,example.com",
       rpc-host-whitelist-enabled = true;
-      rpc-host-whitelist = "*.writefor.fun,localhost,192.168.5.*";
+      rpc-host-whitelist = "*.homelab.example,localhost,192.0.2.*";
       rpc-user = myvars.username;
       rpc-username = myvars.username;
       # rpc-password = "test"; # you'd better use the credentialsFile for this.

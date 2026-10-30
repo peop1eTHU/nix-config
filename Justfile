@@ -160,8 +160,8 @@ niri mode="switch" verbosity="normal":
 # Pin shoukei's home Wi-Fi to a static IPv4 (run once; the profile persists).
 [linux]
 [group('desktop')]
-shoukei-home-wifi:
-  sudo nu {{absolute_path("scripts/shoukei-home-wifi-static.nu")}}
+shoukei-home-wifi ssid:
+  sudo nu {{absolute_path("scripts/shoukei-home-wifi-static.nu")}} {{quote(ssid)}}
 
 ############################################################################
 #
@@ -288,13 +288,13 @@ dsh-web:
   # with 198.18.0.0/15, so a proxied hop makes mihomo resolve the origin instead.
   # That makes mihomo a dependency of every Node fetch the harness makes, so it has
   # to stop at the LAN: without no_proxy the llama-swap endpoint (aquamarine,
-  # 192.168.5.101) goes through it too. Node reads only lowercase `no_proxy` and
+  # 192.0.2.101) goes through it too. Node reads only lowercase `no_proxy` and
   # matches exact hosts, not CIDR; curl and Go do honor CIDR.
   with-env {
     HTTPS_PROXY: "http://127.0.0.1:7897"
     HTTP_PROXY: "http://127.0.0.1:7897"
-    no_proxy: "localhost,127.0.0.1,::1,[::1],192.168.5.100,192.168.5.101,192.168.5.178,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-    NO_PROXY: "localhost,127.0.0.1,::1,[::1],192.168.5.100,192.168.5.101,192.168.5.178,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    no_proxy: "localhost,127.0.0.1,::1,[::1],192.0.2.100,192.0.2.101,192.0.2.178,192.0.2.0/24,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    NO_PROXY: "localhost,127.0.0.1,::1,[::1],192.0.2.100,192.0.2.101,192.0.2.178,192.0.2.0/24,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
   } { ^dsh --profile web --no-open }
 
 # Render the mihomo config from this repo and validate it with the live core.
@@ -440,7 +440,7 @@ list-systemd:
 # =================================================
 #
 # GitHub CLI + Nixpkgs Review via Github Action
-# https://github.com/ryan4yin/nixpkgs-review-gha
+# Pass the workflow repository explicitly; these recipes dispatch remote jobs.
 #
 # =================================================
 
@@ -450,15 +450,15 @@ gh-login:
 
 # Run nixpkgs-review for PR
 [group('nixpkgs')]
-pkg-review pr:
-  gh workflow run review.yml --repo ryan4yin/nixpkgs-review-gha -f x86_64-darwin=no -f post-result=true -f pr={{pr}}
+pkg-review pr repo:
+  gh workflow run review.yml --repo {{repo}} -f x86_64-darwin=no -f post-result=true -f pr={{pr}}
 
 # Run package tests for PR
 [group('nixpkgs')]
-pkg-test pr pname:
-  gh workflow run review.yml --repo ryan4yin/nixpkgs-review-gha -f x86_64-darwin=no -f post-result=true -f pr={{pr}} -f extra-args="-p {{pname}}.passthru.tests"
+pkg-test pr pname repo:
+  gh workflow run review.yml --repo {{repo}} -f x86_64-darwin=no -f post-result=true -f pr={{pr}} -f extra-args="-p {{pname}}.passthru.tests"
 
 # View the summary of a workflow
 [group('nixpkgs')]
-pkg-summary:
-  gh workflow view review.yml --repo ryan4yin/nixpkgs-review-gha
+pkg-summary repo:
+  gh workflow view review.yml --repo {{repo}}

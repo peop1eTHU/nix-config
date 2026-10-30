@@ -158,12 +158,12 @@ than the package needs, and the FHS/wrapper/VM closure is what users download an
 
 ## 5. Use the repository workflow when appropriate
 
-These recipes trigger the configured `ryan4yin/nixpkgs-review-gha` workflow:
+These recipes require an explicit repository containing the review workflow:
 
 ```bash
-just pkg-review <pr>
-just pkg-test <pr> <pname>
-just pkg-summary
+just pkg-review <pr> <owner/repo>
+just pkg-test <pr> <pname> <owner/repo>
+just pkg-summary <owner/repo>
 ```
 
 They are remote GitHub Actions operations on a shared workflow repository, not local tests. Confirm

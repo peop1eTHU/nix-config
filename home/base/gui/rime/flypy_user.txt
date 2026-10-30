@@ -16,9 +16,7 @@
 # 用户词库，下行开始添加，编码格式见上，部署后生效
 
 # [自定义]我的个人信息
-xiaoyin_c@qq.com	mail
-ryan4yin@linux.com	mail
-https://thiscute.world	blog
+cqq060213@163.com	mail
 
 # [自定义]常用符号
 ## 小鹤内置：希腊大写 ofxd 希腊小写 ofxx

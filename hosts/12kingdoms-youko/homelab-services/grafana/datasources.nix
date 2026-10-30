@@ -56,7 +56,7 @@
           timeInterval = "15s";
           queryTimeout = "90s";
           disableMetricsLookup = false; # enable this for metrics autocomplete
-          vmuiUrl = "https://prometheus.writefor.fun/vmui/";
+          vmuiUrl = "https://prometheus.homelab.example/vmui/";
         };
         isDefault = true;
         editable = false;
@@ -66,7 +66,7 @@
         name = "loki-k3s-test-1";
         type = "loki";
         access = "proxy";
-        url = "https://loki-gateway.writefor.fun";
+        url = "https://loki-gateway.homelab.example";
         jsonData = {
           timeout = 30;
           maxLines = 1000;
@@ -97,7 +97,7 @@
           # https://grafana.com/docs/grafana/latest/datasources/postgres/configure/
           name = "postgres-playground";
           type = "postgres";
-          url = "postgres.writefor.fun:5432";
+          url = "postgres.homelab.example:5432";
           user = "playground";
           secureJsonData = {
             password = "$__file{${config.age.secrets."postgres-playground-password".path}}";
@@ -114,7 +114,7 @@
             postgresVersion = 1500; # 15.xx
             # tls
             tlsConfigurationMethod = "file-path";
-            sslRootCertFile = mylib.relativeToRoot "certs/ecc-ca.crt";
+            sslRootCertFile = "/var/lib/grafana/postgres-ca.crt";
           };
           editable = false;
         }

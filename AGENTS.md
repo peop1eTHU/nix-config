@@ -123,8 +123,8 @@ them in their skill catalog). `agents/` without the dot holds the global rules a
 
 ## Related Repositories
 
-When a change here affects one of these, make both edits in the same task, one branch or PR per
-repository, and cross-link them — no need to be told.
+Confirm the checkout and its remote before editing a related repository. The inherited cluster and
+container configurations below are templates; their repository names do not establish ownership.
 
 - `~/codes/k8s-gitops` — Flux cluster state for the k3s cluster whose hosts are defined in
   `hosts/k8s` and `hosts/12kingdoms-youko` (NFS golden store, kube-vip block, `br0`). Host
@@ -134,8 +134,8 @@ repository, and cross-link them — no need to be told.
 - `~/codes/nix-secrets` — the private agenix store behind `secrets/` and the `mysecrets` input:
   ciphertext and recipient rules for the secrets declared here.
 - `wallpapers`, `nur-ryan4yin`, `pyclipsync`, `nu_scripts`, `mattpocock-skills`, `i-have-adhd` —
-  flake inputs from the user's own repositories; bump with `just upp <input>` after their source
-  changes, do not edit them from here.
+  upstream flake inputs retained for downloads. Their owners are not deployment or push targets;
+  inspect `flake.nix` before updating a source.
 
 ## Further Context
 

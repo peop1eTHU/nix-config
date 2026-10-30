@@ -1,10 +1,11 @@
 {
   outputs,
+  myvars,
   ...
 }:
 let
   cfg = outputs.nixosConfigurations.ai-niri.config;
-  hm = cfg.home-manager.users.ryan;
+  hm = cfg.home-manager.users.${myvars.username};
   packageNames = map (package: package.pname or "") hm.i18n.inputMethod.fcitx5.addons;
 in
 {

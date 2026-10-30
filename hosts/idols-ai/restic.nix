@@ -19,8 +19,8 @@ in
   # desktop-only (the server holds the homelab one, not this); the REST
   # credentials come from a systemd EnvironmentFile so they stay out of the URL.
   modules.restic-backup = {
-    enable = true;
-    repository = "rest:https://restic.writefor.fun/idols-ai/";
+    enable = lib.mkDefault false;
+    repository = "rest:https://restic.homelab.example/idols-ai/";
     environmentFile = lib.mkIf config.modules.restic-backup.enable (
       mylib.requireSecretPath {
         inherit config;

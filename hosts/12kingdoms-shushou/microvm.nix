@@ -46,7 +46,7 @@
 
   # Attach the guest's tap to the VM bridge, the same way the physical NIC is
   # attached. The name is vm<last IP octet> from lib/genMicrovmGuestModule.nix:
-  # 192.168.5.116 -> vm116, 192.168.5.113 -> vm113.
+  # 192.0.2.116 -> vm116, 192.0.2.113 -> vm113.
   systemd.network.networks."20-vm116" = {
     matchConfig.Name = [ "vm116" ];
     networkConfig = {

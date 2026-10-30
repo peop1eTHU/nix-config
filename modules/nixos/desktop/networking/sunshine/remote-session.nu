@@ -121,13 +121,16 @@ def start-sunshine [machine: string] {
 }
 
 def main [
-  --user (-u): string = 'ryan'
+  --user (-u): string = ''
   --tty (-t): string = '/dev/tty1'
   --command (-c): string = ''
   --force (-f)
   --check
 ] {
-  let session_user = ($env.SUDO_USER? | default $user)
+  let session_user = if $user != '' { $user } else { $env.SUDO_USER? | default '' }
+  if $session_user == '' {
+    error make { msg: 'Pass --user explicitly when SUDO_USER is unset.' }
+  }
   let user_machine = (user-machine $session_user)
   # niri-session starts niri.service through the user manager. Run the
   # compositor directly so greetd owns this temporary session. This

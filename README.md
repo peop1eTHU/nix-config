@@ -1,34 +1,25 @@
-<h2 align="center">:snowflake: Ryan4Yin's Nix Config :snowflake:</h2>
+<h2 align="center">:snowflake: Remi's Nix Config :snowflake:</h2>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="400" />
 </p>
 
 <p align="center">
-	<a href="https://github.com/ryan4yin/nix-config/stargazers">
-		<img alt="Stargazers" src="https://img.shields.io/github/stars/ryan4yin/nix-config?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41"></a>
+	<a href="https://github.com/peop1eTHU/nix-config/stargazers">
+		<img alt="Stargazers" src="https://img.shields.io/github/stars/peop1eTHU/nix-config?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41"></a>
     <a href="https://nixos.org/">
         <img src="https://img.shields.io/badge/NixOS-26.11-informational.svg?style=for-the-badge&logo=nixos&color=F2CDCD&logoColor=D9E0EE&labelColor=302D41"></a>
-    <a href="https://github.com/ryan4yin/nixos-and-flakes-book">
-        <img src="https://img.shields.io/badge/Nix%20Flakes-learning-informational.svg?style=for-the-badge&logo=nixos&color=F2CDCD&logoColor=D9E0EE&labelColor=302D41"></a>
   </a>
 </p>
 
-> My configuration is becoming more and more complex, and **it will be difficult for beginners to
-> read**. If you are new to NixOS and want to know how I use NixOS, I would recommend you to take a
-> look at the [ryan4yin/nix-config/releases](https://github.com/ryan4yin/nix-config/releases) first,
-> **check out to some simpler older versions, such as
-> [i3-kickstarter](https://github.com/ryan4yin/nix-config/tree/i3-kickstarter), which will be much
-> easier to understand**.
+This fork manages Remi's NixOS and macOS configuration. The current personal host is `reminix`, an
+aarch64-linux NixOS guest under UTM with Home Manager and Niri.
 
-This repository is home to the Nix code that builds all of my systems:
-
-1. **NixOS desktops** — Home Manager, [Niri][Niri] (Wayland), the [Noctalia][noctalia] shell,
-   agenix.
-2. **macOS desktops** — nix-darwin + Home Manager, sharing the same `home/` configuration with the
-   NixOS desktops.
-3. **NixOS servers** — three physical mini PCs running the VMs (libvirt and microVMs), the K3s test
-   cluster and the self-hosted services.
+The inherited desktop, server, MicroVM, and K3s definitions remain as templates. Their hardware and
+LAN addresses need review before use. `192.0.2.0/24` and `homelab.example` are reserved examples;
+Grafana MCP uses localhost, remote desktop backups and builds are opt-in, and notifications have no
+default external recipient. Upstream package and wallpaper downloads remain pinned to the sources
+declared in `flake.nix`.
 
 See [./hosts](./hosts) for the host inventory, [./outputs](./outputs) for how the flake outputs are
 composed, [./BACKUP.md](./BACKUP.md) for the backup design, and [./AGENTS.md](./AGENTS.md) for the
@@ -41,16 +32,8 @@ something is setup and configured once, it works (almost) forever. If someone el
 configuration, anyone else can just use it (if you really understand what you're copying/referring
 now).
 
-As for Flakes, refer to
-[Introduction to Flakes - NixOS & Nix Flakes Book](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/introduction-to-flakes)
-
-**Want to know NixOS & Flakes in detail? Looking for a beginner-friendly tutorial or best practices?
-You don't have to go through the pain I've experienced again! Check out my
-[NixOS & Nix Flakes Book - 🛠️ ❤️ An unofficial & opinionated :book: for beginners](https://github.com/ryan4yin/nixos-and-flakes-book)!**
-
-> If you're using macOS, check out
-> [ryan4yin/nix-darwin-kickstarter](https://github.com/ryan4yin/nix-darwin-kickstarter) for a quick
-> start.
+For setup and concepts, see [Nix documentation](https://nix.dev/)
+and +[nix-darwin](https://github.com/nix-darwin/nix-darwin).
 
 ## Components
 
@@ -78,12 +61,6 @@ You don't have to go through the pain I've experienced again! Check out my
 
 Wallpapers: https://github.com/ryan4yin/wallpapers
 
-## Screenshots
-
-![desktop](./_img/2026-10-02_niri-noctalia_desktop.webp)
-
-![btop, fastfetch, and llama.cpp serving logs](./_img/2026-10-06_btop-monitoring-system-info.webp)
-
 ## Editors / IDE
 
 - **Terminal editors:** [./home/base/core/editors/](./home/base/core/editors/) — Helix / Neovim,
@@ -105,14 +82,9 @@ hardening, and [./WORKAROUNDS.md](./WORKAROUNDS.md) for temporary exceptions and
 
 ## How to Deploy this Flake?
 
-<!-- prettier-ignore -->
-> :red_circle: **IMPORTANT**: **You should NOT deploy this flake directly on your machine :exclamation:
-> It will not succeed.** This flake contains my hardware configuration (such as
-> [hardware-configuration.nix](hosts/idols-ai/hardware-configuration.nix),
-> [Nvidia support](hosts/idols-ai/hardware-nvidia.nix), etc.) which is not suitable for your
-> hardware, and requires my private secrets repository
-> [ryan4yin/nix-secrets](https://github.com/ryan4yin/nix-secrets) to deploy. You
-> may use this repo as a reference to build your own configuration.
+Choose the output for your own host. The inherited configurations contain hardware-specific settings
+and optional services that require your own credentials. The private inputs belong to `peop1eTHU`;
+`reminix` keeps the optional desktop and server secrets disabled.
 
 Updating flake inputs and rolling the result out safely is a procedure, not a single command. Follow
 [`.agents/skills/nix-config-update/SKILL.md`](./.agents/skills/nix-config-update/SKILL.md).

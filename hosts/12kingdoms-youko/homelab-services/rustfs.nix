@@ -20,7 +20,7 @@
       RUSTFS_CONSOLE_ENABLE = "true";
       # Sign/presign against the public hostname, since the public port (443)
       # differs from the internal one (9000).
-      RUSTFS_SERVER_DOMAINS = "s3.writefor.fun";
+      RUSTFS_SERVER_DOMAINS = "s3.homelab.example";
       RUST_LOG = "info";
     };
     # Root credentials (access key = root "user", secret key = password), as a

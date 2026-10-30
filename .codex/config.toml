@@ -5,5 +5,5 @@
 command = "mcp-grafana"
 # Read-only surface; drop this arg to allow dashboard/alert edits.
 args = ["--disable-write"]
-env = { GRAFANA_URL = "https://grafana.writefor.fun" }
+env = { GRAFANA_URL = "http://127.0.0.1:3000" }
 env_vars = ["GRAFANA_SERVICE_ACCOUNT_TOKEN"]

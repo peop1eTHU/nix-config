@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration of Ryan Yin";
+  description = "NixOS configuration of Remi";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -14,7 +14,7 @@
     };
 
     my-asahi-firmware = {
-      url = "git+ssh://git@github.com/ryan4yin/asahi-firmware.git?shallow=1";
+      url = "git+ssh://git@github.com/peop1eTHU/my-asahi-firmware.git?shallow=1";
       flake = false;
     };
   };

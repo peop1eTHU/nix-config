@@ -32,8 +32,8 @@ in
       # https://github.com/gethomepage/homepage#environment-variables
       environment = {
         # homepage rejects requests whose Host header it does not know about.
-        # caddy proxies with the original Host (`home.writefor.fun`).
-        HOMEPAGE_ALLOWED_HOSTS = "home.writefor.fun";
+        # caddy proxies with the original Host (`home.homelab.example`).
+        HOMEPAGE_ALLOWED_HOSTS = "home.homelab.example";
       };
       volumes = [
         "${configDir}:/app/config"

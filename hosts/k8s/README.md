@@ -22,7 +22,7 @@ its state in three sparse ext4 images under the host's `/var/lib/microvms/<name>
 The guest's root is a tmpfs and `/nix/store` is the host's store shared read-only (virtiofs), so no
 image has to be built or uploaded; only the volumes above persist. The guest's tap interface is
 bridged onto `br0`, and its name is derived from the last octet of the guest IP by
-`lib/genMicrovmGuestModule.nix` (e.g. `192.168.5.114` -> `vm114`).
+`lib/genMicrovmGuestModule.nix` (e.g. `192.0.2.114` -> `vm114`).
 
 ### Updating a running guest
 
@@ -67,8 +67,8 @@ and placement is enforced by the control-plane taint instead.
 
 ## Kubernetes Resources
 
-Kubernetes resources are deployed and managed separately through
-[ryan4yin/k8s-gitops](https://github.com/ryan4yin/k8s-gitops).
+Kubernetes resources belong in a separately configured GitOps repository owned by the operator.
+These templates do not configure a GitOps deployment destination.
 
 [k3s]: https://github.com/k3s-io/k3s/
 [microvm.nix]: https://github.com/microvm-nix/microvm.nix

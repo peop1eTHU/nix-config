@@ -45,8 +45,8 @@
   };
 
   # Attach the guest's tap to the VM bridge, the same way the physical NIC is
-  # attached. The tap name is derived from the guest IP (192.168.5.114 -> vm114,
-  # 192.168.5.111 -> vm111), as IFNAMSIZ caps interface names at 15 characters.
+  # attached. The tap name is derived from the guest IP (192.0.2.114 -> vm114,
+  # 192.0.2.111 -> vm111), as IFNAMSIZ caps interface names at 15 characters.
   systemd.network.networks."20-vm114" = {
     matchConfig.Name = [ "vm114" ];
     networkConfig = {

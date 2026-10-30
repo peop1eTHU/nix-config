@@ -1,24 +1,14 @@
-# My Private PKI / CA
+# Local certificate templates
 
-This is my private Private Key Infrastructure (PKI) / Certificate Authority (CA) for my personal
-use. It is used to issue certificates for my own servers and services.
+`ecc-csr.conf` and `gen-certs.sh` are templates for a personal CA and a server certificate. Replace
+the example subject and `homelab.example` names before generating certificates. The script creates
+private keys; run it only in a directory without existing key material.
 
-## Current Structure
+Generated keys, certificates, CSRs, and serial files remain local and are ignored by Git. No private
+CA is installed by the shared system configuration. Add your own verified CA through
+`security.pki.certificateFiles` when a host needs it.
 
-- **ecc-ca.crt** - ECC CA certificate file
-- **ecc-ca.srl** - CA serial number file for certificate tracking
-- **ecc-csr.conf** - OpenSSL configuration file for certificate signing requests
-- **ecc-server.crt** - Server certificate signed by the ECC CA
-- **gen-certs.sh** - Shell script to generate certificates automatically
-
-## Security Notes
-
-Private keys (`.key`) and certificate signing requests (`.csr`) are ignored by git; the keys are
-stored in a private secrets repository. The public certificates and configuration files are
-committed to this repository for reference.
-
-## Usage
-
-Run `bash gen-certs.sh` to generate new certificates using the ECC CA configuration.
-
-See [../secrets](../secrets/) for the corresponding private key management.
+The Caddy host template uses Caddy's internal CA for local TLS and is disabled by default. Configure
+your actual domain and ACME credentials before enabling it. PostgreSQL and its Grafana datasource
+use certificate paths under their own state directories; supply your own certificate and CA there
+before using those templates.

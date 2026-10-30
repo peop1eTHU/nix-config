@@ -35,8 +35,8 @@ while lifecycle rules and IAM users/policies use the official `rc` client. See
 
 ### External Resources
 
-- **Kubernetes YAML**: Managed in separate repository
-  [ryan4yin/k8s-gitops](https://github.com/ryan4yin/k8s-gitops)
+- **Kubernetes YAML**: Supply your own GitOps repository before using the inherited cluster
+  templates.
 - **Secrets Management**: Handled via agenix in [../secrets](../secrets/)
 
 ## Usage

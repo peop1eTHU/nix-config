@@ -2,13 +2,12 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/settings
 
-title: Ryan Yin's Homelab
-base: https://home.writefor.fun/
-favicon: https://thiscute.world/favicon.ico
+title: Remi's Homelab
+base: https://home.homelab.example/
 
 # https://developer.mozilla.org/en-US/docs/Web/Manifest/start_url
 # Used by some browsers to determine the start page of the web application
-startUrl: https://home.writefor.fun/
+startUrl: https://home.homelab.example/
 
 language: zh
 
@@ -20,7 +19,7 @@ providers:
   weatherapi: { { HOMEPAGE_VAR_WEATHERAPI_APIKEY } }
 
 background:
-  image: https://file.writefor.fun/wallpapers/rolling-girls.png
+  image: https://file.homelab.example/wallpapers/rolling-girls.png
   blur: sm # 模糊 - sm, "", md, xl... see https://tailwindcss.com/docs/backdrop-blur
   saturate: 90 # 色彩饱和度 - 0, 50, 100... see https://tailwindcss.com/docs/backdrop-saturate
   brightness: 90 # 0, 50, 75... see https://tailwindcss.com/docs/backdrop-brightness

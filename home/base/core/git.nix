@@ -30,7 +30,7 @@
         #
         # [user]
         #   email = "xxx@xxx.com"
-        #   name = "Ryan Yin"
+        #   name = "Remi"
         path = "~/work/.gitconfig";
         condition = "gitdir:~/work/";
       }

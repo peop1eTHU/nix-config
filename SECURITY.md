@@ -33,6 +33,14 @@ small, reversible controls and narrow exceptions; benchmark before adopting expe
 
 ## Architecture and trust boundaries
 
+`reminix` is the current personal host; the inherited fleet definitions remain templates. No private
+CA or upstream personal cache key is trusted by the shared configuration. Desktop backups and remote
+builds are opt-in, and backup alerts have no remote destination until configured. Homelab Telegram
+notifications require an explicit recipient. Grafana MCP and the default voice-input APIs use
+localhost; optional cloud LLM providers send input to their selected provider. Reserved
+`192.0.2.0/24` and `homelab.example` addresses need replacement before using a homelab template.
+These source defaults require activation to change an installed system.
+
 | Boundary        | Current design                                                                                                                                          | Limitation                                                                                                                                                            |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Administration  | Key-based SSH; root key login retained for Colmena/MicroVM deployment                                                                                   | Deployment credentials are root-equivalent; password login being disabled does not restrict stolen keys                                                               |
@@ -142,15 +150,15 @@ the latter or `security.protectKernelImage` (which also disables hibernation).
 
 ## API endpoint and TLS
 
-The canonical endpoint is **`https://test-cluster-1.writefor.fun:6443`**. DNS points it to
-kube-vip's `192.168.5.193`; the three servers include the DNS name in their serving-certificate
-SANs, and the joining servers/agents use that domain. The first server initializes the cluster
-without a join address. This is already a domain-based HA endpoint, not a bare-IP client design.
+The canonical endpoint is **`https://test-cluster-1.homelab.example:6443`**. DNS points it to
+kube-vip's `192.0.2.193`; the three servers include the DNS name in their serving-certificate SANs,
+and the joining servers/agents use that domain. The first server initializes the cluster without a
+join address. This is already a domain-based HA endpoint, not a bare-IP client design.
 
 Use the existing authenticated client configuration to verify it:
 
 ```sh
-k3s kubectl --server=https://test-cluster-1.writefor.fun:6443 --request-timeout=15s get --raw=/readyz
+k3s kubectl --server=https://test-cluster-1.homelab.example:6443 --request-timeout=15s get --raw=/readyz
 ```
 
 Bare-IP access may fail TLS hostname verification because the certificate does not include the VIP
@@ -181,7 +189,9 @@ checks remain necessary after deployment.
   service. Run it with `nix build .#checks.x86_64-linux.security-exporters`. It imports only the
   shared firewall, not real-host secrets or workloads, and does not replace deployment-time checks.
 
-### Read-only audit snapshot — 2026-10-03
+### Inherited read-only audit snapshot — 2026-10-03
+
+The following observations describe the upstream fleet at that date, not this fork's running hosts.
 
 - **API:** the canonical domain resolves to the VIP; authenticated `/readyz` returned `ok` with
   normal TLS validation. No DNS or certificate changes were needed.

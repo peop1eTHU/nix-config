@@ -36,7 +36,7 @@ NVMe selected by `/dev/disk/by-id/`, ESP (~600M) + LUKS + btrfs (subvolumes: `/`
 [preservation](https://github.com/nix-community/preservation) uses `/persistent`.
 
 ```bash
-git clone https://github.com/ryan4yin/nix-config.git
+git clone https://github.com/peop1eTHU/nix-config.git
 cd nix-config/nixos-installer
 
 sudo su
@@ -105,7 +105,7 @@ After the first boot:
 1. **SSH key** (for pulling the private secrets repo):
 
    ```bash
-   ssh-keygen -t ed25519 -a 256 -C "ryan@idols-ai" -f ~/.ssh/idols_ai
+   ssh-keygen -t ed25519 -a 256 -C "remi@idols-ai" -f ~/.ssh/idols_ai
    ssh-add ~/.ssh/idols_ai
    ```
 
@@ -116,7 +116,7 @@ After the first boot:
 
    ```bash
    sudo mv /etc/nixos ~/nix-config
-   sudo chown -R ryan:ryan ~/nix-config
+   sudo chown -R remi:remi ~/nix-config
    cd ~/nix-config
    just niri
    ```

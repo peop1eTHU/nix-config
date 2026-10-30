@@ -27,7 +27,7 @@ pkgs.testers.runNixOSTest {
     server = {
       imports = [
         ../modules/nixos/base/networking/firewall.nix
-        (node "192.168.5.200" "fd42:1::200")
+        (node "192.0.2.200" "fd42:1::200")
       ];
       _module.args = { inherit myvars; };
       # Model trusted IPv6 traffic after the exporter guards, like the tailnet
@@ -41,7 +41,7 @@ pkgs.testers.runNixOSTest {
       });
     };
     monitor = node networking.hostsAddr.youko.ipv4 "fd42:1::183";
-    client = node "192.168.5.199" "fd42:1::199";
+    client = node "192.0.2.199" "fd42:1::199";
   };
   testScript = ''
     start_all()
@@ -52,16 +52,16 @@ pkgs.testers.runNixOSTest {
         server.wait_for_unit(f"{port}.service")
         server.wait_for_open_port(port)
     for port in (9100, 9633, 9835):
-        monitor.succeed(f"nc -z -w 3 192.168.5.200 {port}")
-        client.fail(f"nc -z -w 3 192.168.5.200 {port}")
+        monitor.succeed(f"nc -z -w 3 192.0.2.200 {port}")
+        client.fail(f"nc -z -w 3 192.0.2.200 {port}")
         monitor.fail(f"nc -6 -z -w 3 fd42:1::200 {port}")
         client.fail(f"nc -6 -z -w 3 fd42:1::200 {port}")
         server.succeed(f"nc -6 -z -w 3 ::1 {port}")
-    client.succeed("nc -z -w 3 192.168.5.200 8080")
+    client.succeed("nc -z -w 3 192.0.2.200 8080")
     client.succeed("nc -6 -z -w 3 fd42:1::200 8080")
     # VNC is never reachable off-host on either family; loopback still works.
-    monitor.fail("nc -z -w 3 192.168.5.200 5902")
-    client.fail("nc -z -w 3 192.168.5.200 5902")
+    monitor.fail("nc -z -w 3 192.0.2.200 5902")
+    client.fail("nc -z -w 3 192.0.2.200 5902")
     monitor.fail("nc -6 -z -w 3 fd42:1::200 5902")
     client.fail("nc -6 -z -w 3 fd42:1::200 5902")
     server.succeed("nc -z -w 3 127.0.0.1 5902")

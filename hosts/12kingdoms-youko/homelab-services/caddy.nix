@@ -8,39 +8,28 @@
   ...
 }:
 let
-  # TLS for LAN-only services, served with the homelab's self-signed `ecc-ca`
-  # certificate. Only clients that already installed the private CA (this
-  # repo's desktops/servers, via `modules/base/security.nix`) trust it.
-  # Mobile apps do NOT trust a private CA, so any site a phone must reach uses
-  # `publicTlsConfig` instead of this one.
+  # Caddy creates a local CA for LAN-only services. Install that CA on clients
+  # explicitly; public/mobile endpoints use the ACME certificate below.
   privateTlsConfig = lib.optionalString config.services.caddy.enable ''
     encode zstd gzip
-    tls ${mylib.relativeToRoot "certs/ecc-server.crt"} ${
-      mylib.requireSecretPath {
-        inherit config;
-        name = "caddy-ecc-server.key";
-        consumer = "service caddy TLS";
-      }
-    } {
+    tls internal {
       protocols tls1.3 tls1.3
       curves x25519 secp384r1 secp521r1
     }
   '';
 
   # TLS for sites that must be reachable from unmodified mobile/TV apps. A
-  # single publicly-trusted Let's Encrypt *wildcard* cert (`*.writefor.fun`,
+  # single publicly-trusted Let's Encrypt *wildcard* cert (`*.homelab.example`,
   # plus the apex) is issued once via the ACME DNS-01 challenge and shared by
   # every such vhost, so adding a service never needs new ACME setup. A
   # wildcard also keeps individual hostnames out of public CT logs.
-  # Caddy does NOT issue it: auto-HTTPS is off (`auto_https disable_certs`) and
-  # the private wildcard cert already covers every `*.writefor.fun` name, so
-  # caddy would refuse to manage this one. Instead NixOS `security.acme` (lego)
+  # Auto-HTTPS is off (`auto_https disable_certs`). NixOS `security.acme` (lego)
   # runs the challenge against the Cloudflare zone (see the `security.acme`
   # block below) and caddy only loads the resulting files. DNS-01 needs no
   # inbound ports or public IP, so the services stay on the LAN.
   publicTlsConfig = ''
     encode zstd gzip
-    tls /var/lib/acme/writefor.fun/fullchain.pem /var/lib/acme/writefor.fun/key.pem {
+    tls /var/lib/acme/homelab.example/fullchain.pem /var/lib/acme/homelab.example/key.pem {
       protocols tls1.3 tls1.3
       curves x25519 secp384r1 secp521r1
     }
@@ -48,7 +37,7 @@ let
 in
 {
   services.caddy = {
-    enable = true;
+    enable = lib.mkDefault false;
     # Reload Caddy instead of restarting it when configuration file changes.
     enableReload = true;
     user = "caddy"; # User account under which caddy runs.
@@ -63,13 +52,13 @@ in
     '';
 
     # Dashboard
-    virtualHosts."home.writefor.fun".extraConfig = ''
+    virtualHosts."home.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       reverse_proxy http://localhost:54401
     '';
 
     # https://caddyserver.com/docs/caddyfile/directives/file_server
-    virtualHosts."file.writefor.fun".extraConfig = ''
+    virtualHosts."file.homelab.example".extraConfig = ''
       root * /var/lib/caddy/fileserver/
       ${privateTlsConfig}
       file_server browse {
@@ -78,23 +67,23 @@ in
       }
     '';
 
-    virtualHosts."git.writefor.fun".extraConfig = ''
+    virtualHosts."git.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:3301
     '';
-    virtualHosts."sftpgo.writefor.fun".extraConfig = ''
+    virtualHosts."sftpgo.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:3302
     '';
-    virtualHosts."webdav.writefor.fun".extraConfig = ''
+    virtualHosts."webdav.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:3303
     '';
     # the restic REST server the backup clients push to
-    virtualHosts."restic.writefor.fun".extraConfig = ''
+    virtualHosts."restic.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       # metrics are scraped over loopback only, never through this vhost
       @metrics path /metrics
@@ -103,7 +92,7 @@ in
     '';
     # RustFS replaced MinIO. SigV4 signs the Host header, so preserve it. No
     # `encode` here: compression would corrupt range/streaming responses.
-    virtualHosts."s3.writefor.fun".extraConfig = ''
+    virtualHosts."s3.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       reverse_proxy http://localhost:9000 {
         header_up Host {http.request.host}
@@ -118,7 +107,7 @@ in
     # /rustfs/console/. The console frontend signs its own S3/STS calls to `/`
     # (POST / for STS, GET /?x-id=ListBuckets), so only redirect a plain browser
     # visit (unsigned GET /) to the UI; signed requests must reach RustFS as-is.
-    virtualHosts."s3-console.writefor.fun".extraConfig = ''
+    virtualHosts."s3-console.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       @console_root {
         method GET
@@ -140,9 +129,9 @@ in
     # Immich photo library (websockets for live updates). Uploads stream through
     # Caddy, which has no request-body limit by default.
     # Unlike the LAN-only services above, this one is opened from the Immich
-    # mobile app, which refuses the private `ecc-ca` certificate -- so it gets
+    # mobile app, which refuses the local CA certificate -- so it gets
     # the publicly-trusted Let's Encrypt wildcard (see `publicTlsConfig`).
-    virtualHosts."immich.writefor.fun".extraConfig = ''
+    virtualHosts."immich.homelab.example".extraConfig = ''
       ${publicTlsConfig}
       reverse_proxy http://localhost:2283 {
         header_up Host {http.request.host}
@@ -150,7 +139,7 @@ in
     '';
     # Jellyfin media server (websockets for live dashboard/playstate). Like
     # immich, it is opened from phone/TV apps, so it also uses a public cert.
-    virtualHosts."jellyfin.writefor.fun".extraConfig = ''
+    virtualHosts."jellyfin.homelab.example".extraConfig = ''
       ${publicTlsConfig}
       reverse_proxy http://localhost:8096 {
         header_up Host {http.request.host}
@@ -158,46 +147,46 @@ in
     '';
     # Every other name is not a service on this host: answer 404 instead of
     # caddy's empty 200 fallback, which hides typos.
-    virtualHosts."*.writefor.fun".extraConfig = ''
+    virtualHosts."*.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       respond 404
     '';
-    virtualHosts."transmission.writefor.fun".extraConfig = ''
+    virtualHosts."transmission.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       # transmission runs in its own network namespace (see transmission.nix),
       # so its RPC is reached over that namespace address, not localhost.
-      reverse_proxy http://192.168.5.118:9091
+      reverse_proxy http://192.0.2.118:9091
     '';
 
     # Monitoring
-    virtualHosts."uptime-kuma.writefor.fun".extraConfig = ''
+    virtualHosts."uptime-kuma.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:53350
     '';
-    virtualHosts."grafana.writefor.fun".extraConfig = ''
+    virtualHosts."grafana.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:3351
     '';
-    virtualHosts."prometheus.writefor.fun".extraConfig = ''
+    virtualHosts."prometheus.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:9090
     '';
-    virtualHosts."alertmanager.writefor.fun".extraConfig = ''
+    virtualHosts."alertmanager.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:9093
     '';
-    virtualHosts."vmalert.writefor.fun".extraConfig = ''
+    virtualHosts."vmalert.homelab.example".extraConfig = ''
       ${privateTlsConfig}
       encode zstd gzip
       reverse_proxy http://localhost:8880
     '';
     # Allow http access for specific api (do not redirect to https)
-    # virtualHosts."http://xxx.writefor.fun/a/b/c".extraConfig = ''
+    # virtualHosts."http://xxx.homelab.example/a/b/c".extraConfig = ''
     #   encode zstd gzip
     #   reverse_proxy http://localhost:9090
     # '';
@@ -205,7 +194,7 @@ in
 
   # Issue one public wildcard cert (plus the apex) with lego (packaged in
   # nixpkgs, so no custom caddy build is needed) via the ACME DNS-01 challenge
-  # against the Cloudflare-managed `writefor.fun` zone. The token is an agenix
+  # against the Cloudflare-managed `homelab.example` zone. The token is an agenix
   # environment file holding `CLOUDFLARE_DNS_API_TOKEN=...`. The wildcard is
   # shared by every `publicTlsConfig` vhost, so new services need no new entry.
   security.acme = lib.mkIf config.services.caddy.enable {
@@ -214,9 +203,9 @@ in
     # the root-owned agenix file; run it as root so it can.
     useRoot = true;
     defaults.email = myvars.useremail;
-    certs."writefor.fun" = {
-      domain = "*.writefor.fun";
-      extraDomainNames = [ "writefor.fun" ];
+    certs."homelab.example" = {
+      domain = "*.homelab.example";
+      extraDomainNames = [ "homelab.example" ];
       dnsProvider = "cloudflare";
       environmentFile = mylib.requireSecretPath {
         inherit config;
@@ -243,9 +232,9 @@ in
 
   # caddy loads the lego-issued files at startup, so wait for the acme service;
   # otherwise its config fails to load before the cert exists.
-  systemd.services.caddy = {
-    wants = [ "acme-writefor.fun.service" ];
-    after = [ "acme-writefor.fun.service" ];
+  systemd.services.caddy = lib.mkIf config.services.caddy.enable {
+    wants = [ "acme-homelab.example.service" ];
+    after = [ "acme-homelab.example.service" ];
   };
 
   # caddy is reached from the LAN/tailnet only; the shared firewall
@@ -253,7 +242,7 @@ in
 
   # Serve the wallpapers from the file server. `mkdir -p` here covers the
   # whole fileserver tree; caddy's dataDir itself is created by the module.
-  system.activationScripts.installCaddyWallpapers = ''
+  system.activationScripts.installCaddyWallpapers = lib.mkIf config.services.caddy.enable ''
     mkdir -p /var/lib/caddy/fileserver/wallpapers
     ${pkgs.rsync}/bin/rsync -avz --chmod=D2755,F644 ${wallpapers}/ /var/lib/caddy/fileserver/wallpapers/
   '';

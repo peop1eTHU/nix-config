@@ -1,8 +1,10 @@
 # Hosts
 
-This directory contains all host-specific configurations for my NixOS and macOS systems.
+The personal host is [`reminix`](./reminix/README.md). Other definitions and the hardware history
+below are inherited templates, not an inventory of deployed personal machines. Replace their
+TEST-NET-1 addresses and hardware settings before deploying them.
 
-## Current Host Inventory
+## Inherited Host Templates
 
 ### Physical Machines
 
@@ -35,9 +37,9 @@ DIMMs stayed untrusted.
 On 2026-10-13 that platform was split in two. The Z890 board, the 270K Plus, the 2×48G kit and two
 Radeon AI PRO R9700 cards became `aquamarine`, a headless inference server; `ai` went back to the
 MSI MAG B760M MORTAR board with the i5-13600KF, the 2×16G kit and the RTX 4090. `aquamarine` boots
-from the NVMe that used to be `ai`'s `/data` disk. Its name and the address `192.168.5.101` are
-reused from the `aquamarine` VM retired on 2026-09-21; that VM's services still run directly on
-`youko` (`hosts/12kingdoms-youko/homelab-services/`). Hardware, install and runbook:
+from the NVMe that used to be `ai`'s `/data` disk. Its name and the address `192.0.2.101` are reused
+from the `aquamarine` VM retired on 2026-09-21; that VM's services still run directly on `youko`
+(`hosts/12kingdoms-youko/homelab-services/`). Hardware, install and runbook:
 [`idols-aquamarine/README.md`](./idols-aquamarine/README.md).
 
 ##### Retired
@@ -81,15 +83,6 @@ disks.
   VM under UTM on macOS
 - **K3s Testing**: `k3s-test-1` control plane and workers, running as microVMs; placement and
   rollout are documented in [`k8s/README.md`](./k8s/README.md)
-
-### External Systems
-
-- **SBCs**: aarch64/riscv64 single-board computers managed in
-  [ryan4yin/nixos-config-sbc](https://github.com/ryan4yin/nixos-config-sbc)
-
-All my riscv64 hosts:
-
-![](../_img/2023-08-16_nixos-riscv-cluster.webp)
 
 ## Naming Conventions
 
@@ -146,17 +139,8 @@ activating it. Host activation is always explicit: Colmena (`just shoryu`, `just
 
 ## Distributed Building
 
-I usually run the build command on `Ai` and nix will distribute the build to other NixOS machines,
-which is convenient and fast.
-
-When building some packages for riscv64 or aarch64, I often have no cache available because of
-various changes under the hood, so I need to build much more packages than usual, which is one of
-the reasons why the cluster was originally built, and another reason is distributed building is
-cool!
-
-![](../_img/2023-06-17_nix-distributed-building.webp)
-
-![](../_img/2023-06-17_nix-distributed-building-log.webp)
+Remote builds are disabled by default. Before enabling `modules.remote-builders.enable`, configure
+your own builder addresses, client keys, and verified SSH host keys in `vars/networking.nix`.
 
 ## References
 

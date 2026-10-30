@@ -2,8 +2,8 @@
 name: nixpkgs-patched
 description:
   Use when temporarily carrying an unmerged nixpkgs pull request or commit in the personal
-  ryan4yin/nixpkgs fork, updating the nixos-unstable-patched branch, or consuming that branch from
-  this nix-config flake, including a WORKAROUNDS.md row whose removal condition is carrying the
+  user-approved nixpkgs fork, updating the nixos-unstable-patched branch, or consuming that branch
+  from this nix-config flake, including a WORKAROUNDS.md row whose removal condition is carrying the
   patch.
 ---
 
@@ -31,9 +31,10 @@ git fetch fork nixos-unstable-patched
 gh pr view <pr> --repo NixOS/nixpkgs --json state,baseRefName,commits
 ```
 
-The intended fork is `ryan4yin/nixpkgs` and the intended branch is `nixos-unstable-patched`. In
-`~/src/nixpkgs`, `origin` is `NixOS/nixpkgs` and the fork is `fork` (or `ryan4yin`); never push the
-patched branch to `origin`. Confirm the names; do not infer a remote from its position in the list.
+Use the exact fork and branch authorized by the user. Verify that the selected `fork` remote points
+there before fetching or publishing; `origin` should remain `NixOS/nixpkgs`. The download owner in
+this flake is not a push target. Confirm remote names from the checkout, and publish only to the
+verified personal fork.
 
 ## 2. Refresh the patched branch
 
@@ -79,7 +80,8 @@ git push --force-with-lease fork nixos-unstable-patched
 git ls-remote fork refs/heads/nixos-unstable-patched
 ```
 
-Then in this repository, update only the patched input and inspect the lock diff:
+Then in this repository, point `nixpkgs-patched.url` at the approved fork if needed, update only
+that input, and inspect the source and lock diff:
 
 ```bash
 nix flake update nixpkgs-patched

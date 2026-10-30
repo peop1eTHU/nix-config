@@ -1,7 +1,8 @@
 # Fcitx5 Vinput
 
-Voice input on `ai` and `shoukei`, backed by a Sherpa-ONNX model. Open Vinput from the application
-launcher for settings.
+Voice input on hosts that enable `modules.desktop.vinput`. The default ASR and correction endpoints
+use localhost; run your own Whisper API and llama-swap there, or choose the local Sherpa-ONNX
+provider. Open Vinput from the application launcher for settings.
 
 ## Key bindings
 
@@ -24,15 +25,16 @@ vinput model use onnx-xasr-zh-en-960ms-punct-stream   # set as active model
 systemctl --user restart vinput-daemon
 ```
 
-`vinput model list -a` lists the available registry models.
+`vinput model list -a` lists the available registry models. Select the Sherpa-ONNX provider to use
+the downloaded model; the default Whisper provider requires an API running on localhost.
 
 ## API keys
 
-Scene providers reference the DeepSeek key as `{{env.DEEPSEEK_API_KEY}}` (see `vinput scene list`),
-and the daemon resolves that from its own environment. A systemd user service inherits neither the
-interactive shell's environment nor any app's env file, so the unit reads
-`EnvironmentFile=%h/.secrets/nushell-secrets.env`. A missing file fails the unit; a file without the
-variable still starts, but every correction fails with
+The optional DeepSeek scene sends the transcript to DeepSeek when selected. It references the key as
+`{{env.DEEPSEEK_API_KEY}}` (see `vinput scene list`), and the daemon resolves that from its own
+environment. A systemd user service inherits neither the interactive shell's environment nor any
+app's env file, so the unit reads the optional `EnvironmentFile=-%h/.secrets/nushell-secrets.env`.
+Local providers need no key file. Selecting DeepSeek without its variable fails with
 `vinput-daemon: environment variable in api_key (...) for provider 'deepseek' is unset or empty`.
 
 ```sh

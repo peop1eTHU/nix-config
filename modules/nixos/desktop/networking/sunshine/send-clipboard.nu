@@ -14,17 +14,17 @@
 #     repo is cloned at ~/nix-config on the host)
 #
 # Usage:
-#   nu send-clipboard.nu ryan@ai
-#   nu send-clipboard.nu ryan@ai --remote /abs/path/to/clipboard.nu
+#   nu send-clipboard.nu remi@ai
+#   nu send-clipboard.nu remi@ai --remote /abs/path/to/clipboard.nu
 
 def main [
-  host: string = "" # SSH target of the Sunshine host, e.g. ryan@ai
+  host: string = "" # SSH target of the Sunshine host, e.g. remi@ai
   --remote: string = "~/nix-config/modules/nixos/desktop/networking/sunshine/clipboard.nu"
 ] {
   if $host == '' {
     error make {
       msg: 'missing SSH target'
-      help: 'usage: nu send-clipboard.nu <ssh-target>, e.g. `nu send-clipboard.nu ryan@ai`'
+      help: 'usage: nu send-clipboard.nu <ssh-target>, e.g. `nu send-clipboard.nu remi@ai`'
     }
   }
 

@@ -64,8 +64,8 @@ still reaches the core.
 The gateway (`suzi`, not a host in this flake) runs the same config with a fixed set of deltas --
 `gateway-config.nu` renders it from the same `sources.yaml` and `policy.yaml`. The gateway uses
 nftables TProxy, disables the desktop TUN auto-route, and uses `fake-ip` DNS with `dns.ipv6: false`:
-LAN clients receive fake A mappings so mihomo retains the domain for routing and sniffing while their
-traffic uses the working IPv4 TProxy path. The gateway withholds AAAA records because LAN IPv6
+LAN clients receive fake A mappings so mihomo retains the domain for routing and sniffing while
+their traffic uses the working IPv4 TProxy path. The gateway withholds AAAA records because LAN IPv6
 transparent handling is unreliable on this gateway. Its output carries the subscriptions and the
 private domains, so never commit it; the secret is filled in on the box, not here. Its binary is a
 static release build under `/usr/local/bin`, not a package: update it by hand, validate the live
@@ -97,7 +97,7 @@ targets instead of writing a config the core rejects.
   WA-028's IPv4 pin covers it. The pool is `2001:2::/64`, not the shipped `fdfe:dcba:9876::/64`:
   that is ULA (`fc00::/7`), which Local Network Access calls **local**, so a public page pulling a
   dual-stack subresource prompts. `2001:2::/48` is RFC 5180 benchmarking, the v6 twin of the
-  `198.18.0.0/15` v4 default. Never grant that prompt broadly -- it also covers `192.168.5.0/24`,
+  `198.18.0.0/15` v4 default. Never grant that prompt broadly -- it also covers `192.0.2.0/24`,
   `fd05:5::/64` and Tailscale. Moving the pool leaves mihomo's own TUN addresses (`198.18.0.1`,
   `fdfe:dcba:9876::1`) alone; no client is ever handed those as an answer. To check the line,
   resolve through GSLB and dial the carrier's own-block AAAA (`dig AAAA www.jd.com` on China Telecom

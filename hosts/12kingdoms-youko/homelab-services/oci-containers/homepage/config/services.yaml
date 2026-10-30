@@ -11,101 +11,101 @@
     - Shoryu:
         icon: mdi-server
         description: "CPU: R7-5825U / MEM: 64G / DISK: 1T"
-        href: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.181:9100
-        siteMonitor: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.181:9100
+        href: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.181:9100
+        siteMonitor: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.181:9100
     - Shushou:
         icon: mdi-server
         description: "CPU: R9-5900HX / MEM: 64G / DISK: 1T"
-        href: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.182:9100
-        siteMonitor: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.182:9100
+        href: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.182:9100
+        siteMonitor: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.182:9100
     - Youko:
         icon: mdi-server
         description: "CPU: R5-5625U / MEM: 24G (8+16) / DISK: 1T+4T*2"
-        href: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.183:9100
-        siteMonitor: https://grafana.writefor.fun/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.168.5.183:9100
+        href: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.183:9100
+        siteMonitor: https://grafana.homelab.example/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=192.0.2.183:9100
 
     # remote write to main prometheus, disable this one
     # - Victoria-Metrics:
     #     icon: si-victoriametrics
-    #     href: http://vm.writefor.fun/
+    #     href: http://vm.homelab.example/
 
 - Homelab Monitoring:
     - Grafana:
         icon: grafana.svg
-        href: https://grafana.writefor.fun
+        href: https://grafana.homelab.example
         description: Data visualised on dashboards
-        siteMonitor: https://grafana.writefor.fun
+        siteMonitor: https://grafana.homelab.example
     - VictoriaMetrics:
         icon: si-victoriametrics
-        href: https://prometheus.writefor.fun
+        href: https://prometheus.homelab.example
         description: Time-series database
-        siteMonitor: https://prometheus.writefor.fun
+        siteMonitor: https://prometheus.homelab.example
     - Uptime Kuma:
         icon: uptime-kuma.svg
-        href: https://uptime-kuma.writefor.fun
+        href: https://uptime-kuma.homelab.example
         description: Uptime Checking
-        siteMonitor: https://uptime-kuma.writefor.fun
+        siteMonitor: https://uptime-kuma.homelab.example
     - Alertmanager:
         icon: alertmanager.png
-        href: https://alertmanager.writefor.fun
+        href: https://alertmanager.homelab.example
         description: Alert routing
-        siteMonitor: https://alertmanager.writefor.fun
+        siteMonitor: https://alertmanager.homelab.example
     - vmalert:
         icon: si-victoriametrics
-        href: https://vmalert.writefor.fun
+        href: https://vmalert.homelab.example
         description: Alerting rules for VictoriaMetrics
-        siteMonitor: https://vmalert.writefor.fun
+        siteMonitor: https://vmalert.homelab.example
 
 - Homelab Applications:
     - SFTPGO:
         icon: sftpgo.png
-        href: "https://sftpgo.writefor.fun/web/admin/folders"
+        href: "https://sftpgo.homelab.example/web/admin/folders"
         description: WebDAV & SFTP server
-        siteMonitor: https://sftpgo.writefor.fun/
+        siteMonitor: https://sftpgo.homelab.example/
     - Gitea:
         icon: gitea.png
-        href: "https://git.writefor.fun/"
+        href: "https://git.homelab.example/"
         description: Gitea - Git with a cup of tea
-        siteMonitor: "https://git.writefor.fun/"
+        siteMonitor: "https://git.homelab.example/"
     - Transmission:
         icon: transmission.png
-        href: "https://transmission.writefor.fun/"
+        href: "https://transmission.homelab.example/"
         description: Transmission BitTorrent client
         # No siteMonitor: the RPC requires auth, so the probe returns 401 and
         # every hit counts against transmission's anti-brute-force threshold.
     - Immich:
         icon: immich.png
-        href: "https://immich.writefor.fun/"
+        href: "https://immich.homelab.example/"
         description: Self-hosted photo library
-        siteMonitor: "https://immich.writefor.fun/"
+        siteMonitor: "https://immich.homelab.example/"
     - Jellyfin:
         icon: jellyfin.png
-        href: "https://jellyfin.writefor.fun/"
+        href: "https://jellyfin.homelab.example/"
         description: Media server
-        siteMonitor: "https://jellyfin.writefor.fun/"
+        siteMonitor: "https://jellyfin.homelab.example/"
     - RustFS Console:
         icon: mdi-database
-        href: "https://s3-console.writefor.fun/"
+        href: "https://s3-console.homelab.example/"
         description: S3-compatible object storage (RustFS)
-        siteMonitor: "https://s3-console.writefor.fun/"
+        siteMonitor: "https://s3-console.homelab.example/"
     - Files:
         icon: mdi-folder-image
-        href: "https://file.writefor.fun/"
+        href: "https://file.homelab.example/"
         description: Static file server
-        siteMonitor: "https://file.writefor.fun/"
+        siteMonitor: "https://file.homelab.example/"
 - k3s-test-1:
     - vmagent:
         icon: si-victoriametrics
-        href: "https://test1-vmagent.writefor.fun/"
+        href: "https://test1-vmagent.homelab.example/"
         description: VictoriaMetrics agent (k3s-test-1)
-        siteMonitor: "https://test1-vmagent.writefor.fun/"
+        siteMonitor: "https://test1-vmagent.homelab.example/"
     - Kiali:
         icon: kiali.png
-        href: "https://kiali.writefor.fun/kiali/"
+        href: "https://kiali.homelab.example/kiali/"
         description: Istio service mesh console
-        siteMonitor: "https://kiali.writefor.fun/kiali/"
+        siteMonitor: "https://kiali.homelab.example/kiali/"
     - Podinfo:
         icon: mdi-application
-        href: "https://podinfo-staging.writefor.fun/"
+        href: "https://podinfo-staging.homelab.example/"
         description: Demo app (staging)
-        siteMonitor: "https://podinfo-staging.writefor.fun/"
+        siteMonitor: "https://podinfo-staging.homelab.example/"

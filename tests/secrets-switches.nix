@@ -252,7 +252,6 @@ in
       "rclone.conf"
       "restic-password"
       "restic-rest-credentials"
-      "ryan4yin-gpg-subkeys.priv.age"
       "ssh-key-romantic"
       "work-gitconfig"
     ];
@@ -304,7 +303,6 @@ in
         {
           group = "webserver";
           names = [
-            "caddy-ecc-server.key"
             "cloudflare-dns-api-token"
             "nix-access-tokens"
             "postgres-ecc-server.key"
@@ -346,7 +344,6 @@ in
     builtins.attrNames mac.age.secrets == [
       "nix-access-tokens"
       "rclone.conf"
-      "ryan4yin-gpg-subkeys.priv.age"
       "ssh-key-romantic"
       "work-gitconfig"
     ];

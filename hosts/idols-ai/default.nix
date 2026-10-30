@@ -48,7 +48,7 @@ in
   modules.zram.enable = false;
 
   # 32G of RAM against aquamarine's 96G, so builds go to the server first.
-  modules.remote-builders.enable = true;
+  modules.remote-builders.enable = lib.mkDefault false;
 
   # zswap: compressed writeback cache in front of the disk swapfile, so cold
   # anonymous pages stay in RAM instead of hitting the SSD. Safe here: the disk

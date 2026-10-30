@@ -111,12 +111,11 @@ in
     };
 
     alertManagerUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "https://alertmanager.writefor.fun";
+      type = lib.types.nullOr lib.types.str;
+      default = null;
       description = ''
-        Alertmanager to POST a failure alert to (`/api/v2/alerts`). youko routes
-        anything above info severity to telegram, so a failed backup is not
-        silent.
+        Alertmanager to POST a failure alert to (`/api/v2/alerts`). When null,
+        backup failures are recorded in the journal without a remote notification.
       '';
     };
 
@@ -217,11 +216,11 @@ in
           RequiresMountsFor = cfg.requiresMountsFor;
         };
 
-    # A failed backup must not be silent: report it to alertmanager, which
-    # routes anything above info severity to telegram.
-    systemd.services.restic-backups-homelab.onFailure = [ "restic-backup-notify.service" ];
+    systemd.services.restic-backups-homelab.onFailure = lib.optional (
+      cfg.alertManagerUrl != null
+    ) "restic-backup-notify.service";
 
-    systemd.services.restic-backup-notify = {
+    systemd.services.restic-backup-notify = lib.mkIf (cfg.alertManagerUrl != null) {
       description = "Report a failed restic backup";
       serviceConfig.Type = "oneshot";
       script = ''

@@ -10,8 +10,8 @@ let
   # Aquamarine - the headless AI inference server (hosts/idols-aquamarine/).
   # 24C/96G and boot.binfmt emulation for aarch64-linux and riscv64-linux, so it
   # serves all three platforms this flake targets. `aquamarine` is also its SSH
-  # alias in /etc/ssh/ssh_config, and its host key is pinned in
-  # /etc/ssh/ssh_known_hosts (vars/networking.nix).
+  # alias in /etc/ssh/ssh_config. Configure its address and verified host key in
+  # vars/networking.nix before enabling this template.
   buildMachines = [
     {
       hostName = "aquamarine";

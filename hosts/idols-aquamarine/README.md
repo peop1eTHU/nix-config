@@ -2,7 +2,7 @@
 
 Headless AI inference server. Revives the `aquamarine` name, retired on 2026-09-21 when the VM of
 that name was decommissioned; this is a different, physical machine that reuses the name and the
-`192.168.5.101` address.
+`192.0.2.101` address.
 
 ## Hardware
 
@@ -206,7 +206,7 @@ and they belong together: the machine comes back on the new board with this disk
    the `/etc/ssh` copy under `/persistent` is incomplete — repeat step 5's check from the console
    before deploying anything else.
 
-   `ip addr` must show `192.168.5.101` on the wired interface. The networkd match uses the `en*`
+   `ip addr` must show `192.0.2.101` on the wired interface. The networkd match uses the `en*`
    prefix, so a renamed NIC cannot strand the host; if the address is missing, check the cable and
    `ip -br link` first.
 

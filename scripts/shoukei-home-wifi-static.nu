@@ -3,13 +3,13 @@
 # Pin shoukei's home Wi-Fi profile to a static IPv4.
 #
 # NetworkManager matches connections by SSID. Run this ONCE, while connected to
-# HOME_SSID: the script refuses to run unless the current Wi-Fi network is that
+# the supplied SSID: the script refuses to run unless the current Wi-Fi network is that
 # exact SSID, so it can never pin the wrong network by accident. Every other
 # network keeps using DHCP. The change is stored in the profile under
 # /etc/NetworkManager/system-connections (preserved by impermanence), so it
 # survives reboots and rebuilds -- no need to run it again.
 #
-#   just shoukei-home-wifi
+#   just shoukei-home-wifi <ssid>
 #
 # See hosts/12kingdoms-shoukei/README.md and WORKAROUNDS.md WA-024/025.
 
@@ -17,15 +17,11 @@
 # Configuration
 # ---------------------------------------------------------------------------
 
-# The home network: 2.4 and 5 GHz are merged into this single SSID, so it is
-# the only network this script may touch.
-const HOME_SSID = "shadow_light_ryan"
-
 # The address to pin on that SSID.
 const STATIC = {
-  address: "192.168.5.108/24"
-  gateway: "192.168.5.1"
-  dns: "192.168.5.1"
+  address: "192.0.2.108/24"
+  gateway: "192.0.2.1"
+  dns: "192.0.2.1"
 }
 
 # ---------------------------------------------------------------------------
@@ -68,19 +64,19 @@ def wifi-profiles [] {
 
 def assert-root [] {
   if (^id -u | str trim | into int) != 0 {
-    error make { msg: "must run as root -- nmcli edits system connections; try: just shoukei-home-wifi" }
+    error make { msg: "must run as root -- nmcli edits system connections; try: just shoukei-home-wifi <ssid>" }
   }
 }
 
-# Abort unless Wi-Fi is connected to HOME_SSID right now.
-def assert-on-home [active: list<string>, wifi: list] {
+# Abort unless Wi-Fi is connected to the supplied SSID right now.
+def assert-on-home [active: list<string>, wifi: list, ssid: string] {
   let connected = ($wifi | where { |p| $p.name in $active })
   let current = (if ($connected | is-empty) { [] } else { $connected | get ssid })
   if ($current | is-empty) {
-    error make { msg: $"not connected to Wi-Fi -- connect to '($HOME_SSID)' first" }
+    error make { msg: $"not connected to Wi-Fi -- connect to '($ssid)' first" }
   }
-  if (not ($HOME_SSID in $current)) {
-    error make { msg: $"not connected to '($HOME_SSID)'; currently on ($current | str join ', ')" }
+  if (not ($ssid in $current)) {
+    error make { msg: $"not connected to '($ssid)'; currently on ($current | str join ', ')" }
   }
 }
 
@@ -88,9 +84,9 @@ def assert-on-home [active: list<string>, wifi: list] {
 # Profile operations
 # ---------------------------------------------------------------------------
 
-# The profile names that carry HOME_SSID.
-def home-profiles [wifi: list] {
-  $wifi | where { |p| $p.ssid == $HOME_SSID } | get name
+# The profile names that carry the supplied SSID.
+def home-profiles [wifi: list, ssid: string] {
+  $wifi | where { |p| $p.ssid == $ssid } | get name
 }
 
 def set-static-ip [profile: string] {
@@ -122,19 +118,19 @@ def apply-live [profile: string] {
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main [] {
+def main [ssid: string] {
   assert-root
 
   let active = (active-connections)
   let wifi = (wifi-profiles)
-  assert-on-home $active $wifi
+  assert-on-home $active $wifi $ssid
 
-  let profiles = (home-profiles $wifi)
+  let profiles = (home-profiles $wifi $ssid)
   if ($profiles | is-empty) {
-    error make { msg: $"no Wi-Fi profile for SSID '($HOME_SSID)'" }
+    error make { msg: $"no Wi-Fi profile for SSID '($ssid)'" }
   }
 
-  print $"pinning '($HOME_SSID)': ($STATIC.address) via ($STATIC.gateway), dns ($STATIC.dns)"
+  print $"pinning '($ssid)': ($STATIC.address) via ($STATIC.gateway), dns ($STATIC.dns)"
   for p in $profiles {
     print $"  set '($p)'"
     set-static-ip $p

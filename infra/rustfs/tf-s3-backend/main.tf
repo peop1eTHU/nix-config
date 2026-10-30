@@ -21,6 +21,6 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    s3 = "https://s3.writefor.fun"
+    s3 = "https://s3.homelab.example"
   }
 }

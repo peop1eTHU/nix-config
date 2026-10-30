@@ -40,7 +40,7 @@ Currently I use both age & GnuPG:
 To use GnuPG seamlessly, some Practical Cryptography knowledge is required, here are some tutorials:
 
 - English version: <https://github.com/nakov/Practical-Cryptography-for-Developers-Book>
-- Chinese version: <https://thiscute.world/tags/cryptography/>
+- Chinese version: <https://example.org/tags/cryptography/>
 
 ## Overview of GnuPG
 
@@ -77,13 +77,13 @@ shows that:
     Selects how passphrases for symmetric encryption are mangled. If n is 0 a plain passphrase (which is in general not recommended) will be used, a 1 adds a salt (which should not be used) to the passphrase and a 3 (the default) iterates the whole process a number of times (see --s2k-count).
 --s2k-count n
 
-    Specify how many times the passphrases mangling for symmetric encryption is repeated. This value may range between 1024 and 65011712 inclusive. The default is inquired from gpg-agent. Note that not all values in the 1024-65011712 range are legal and if an illegal value is selected, GnuPG will round up to the nearest legal value. This option is only meaningful if --s2k-mode is set to the default of 3.
+    Specify how many times the passphrases mangling for symmetric encryption is repeated. This value may range between 1024 and <key-id> inclusive. The default is inquired from gpg-agent. Note that not all values in the 1024-<key-id> range are legal and if an illegal value is selected, GnuPG will round up to the nearest legal value. This option is only meaningful if --s2k-mode is set to the default of 3.
 ```
 
 The strongest options should be:
 
 ```
-gpg --s2k-mode 3 --s2k-count 65011712 --s2k-digest-algo SHA512 --s2k-cipher-algo AES256 ...
+gpg --s2k-mode 3 --s2k-count <key-id> --s2k-digest-algo SHA512 --s2k-cipher-algo AES256 ...
 ```
 
 To use the strongest options globally, you can specify these options in your `~/.gnupg/gpg.conf`.
@@ -119,7 +119,7 @@ gpg (GnuPG) 2.4.1; Copyright (C) 2023 g10 Code GmbH
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 
-gpg: directory '/Users/ryan/.gnupg' created
+gpg: directory '/Users/example/.gnupg' created
 Please select what kind of key you want:
    (1) RSA and RSA
    (2) DSA and Elgamal
@@ -150,7 +150,7 @@ Real name:
 Email address:
 Comment:
 You selected this USER-ID:
-    "Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>"
+    "Example User (For pass For Work ssh only) <user@example.org>"
 
 Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
 We need to generate a lot of random bytes. It is a good idea to perform
@@ -161,14 +161,14 @@ We need to generate a lot of random bytes. It is a good idea to perform
 some other action (type on the keyboard, move the mouse, utilize the
 disks) during the prime generation; this gives the random number
 generator a better chance to gain enough entropy.
-gpg: /Users/ryan/.gnupg/trustdb.gpg: trustdb created
-gpg: directory '/Users/ryan/.gnupg/openpgp-revocs.d' created
-gpg: revocation certificate stored as '/Users/ryan/.gnupg/openpgp-revocs.d/C8D84EBC5F82494F432ACEF042E49B284C30A0DA.rev'
+gpg: /Users/example/.gnupg/trustdb.gpg: trustdb created
+gpg: directory '/Users/example/.gnupg/openpgp-revocs.d' created
+gpg: revocation certificate stored as '/Users/example/.gnupg/openpgp-revocs.d/<key-fingerprint>.rev'
 public and secret key created and signed.
 
 pub   ed25519 2024-01-09 [SC] [expires: 2034-01-04]
-      C8D84EBC5F82494F432ACEF042E49B284C30A0DA
-uid                      Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>
+      <key-fingerprint>
+uid                      Example User (For pass For Work ssh only) <user@example.org>
 sub   cv25519 2024-01-09 [E] [expires: 2034-01-04]
 ```
 
@@ -180,7 +180,7 @@ The generated keys are stored in `~/.gnupg` by default, the functions of each fi
 
 ```bash
 › tree ~/.gnupg/
-/Users/ryan/.gnupg/
+/Users/example/.gnupg/
 |-- S.gpg-agent           # socket file
 |-- S.gpg-agent.browser   # socket file
 |-- S.gpg-agent.extra     # socket file
@@ -188,10 +188,10 @@ The generated keys are stored in `~/.gnupg` by default, the functions of each fi
 |-- S.keyboxd             # socket file
 |-- common.conf              # config file
 |-- openpgp-revocs.d         # Revocation certificates
-|   `-- F680C6D7215674ADEA421CC5E22EC419FF93EA98.rev
+|   `-- <key-fingerprint>.rev
 |-- private-keys-v1.d        # private keys with user info & protect by passphrase
-|   |-- 2083133619AB24DC32DA68F9FE83C58D375284E3.key
-|   `-- 9350704F120643C504491E92CA97255223778C8A.key
+|   |-- <key-fingerprint>.key
+|   `-- <key-fingerprint>.key
 |-- public-keys.d            # public keys
 |   |-- pubring.db
 |   `-- pubring.db.lock
@@ -245,19 +245,19 @@ Now let's add the sub keys to the keypair we generated above:
 > GnuPG will ask you to input your passphrase to unlock your primary key.
 
 ```bash
-› gpg --expert --edit-key ryan4yin@linux.com
+› gpg --expert --edit-key user@example.org
 gpg (GnuPG) 2.4.1; Copyright (C) 2023 g10 Code GmbH
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 
 Secret key is available.
 
-sec  ed25519/42E49B284C30A0DA
+sec  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: SC
      trust: ultimate      validity: ultimate
-ssb  cv25519/6CB4A81FFB3C99B6
+ssb  cv25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: E
-[ultimate] (1). Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>
+[ultimate] (1). Example User (For pass For Work ssh only) <user@example.org>
 
 gpg> addkey
 Please select what kind of key you want:
@@ -299,14 +299,14 @@ some other action (type on the keyboard, move the mouse, utilize the
 disks) during the prime generation; this gives the random number
 generator a better chance to gain enough entropy.
 
-sec  ed25519/42E49B284C30A0DA
+sec  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: SC
      trust: ultimate      validity: ultimate
-ssb  cv25519/6CB4A81FFB3C99B6
+ssb  cv25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: E
-ssb  ed25519/A42813E03A10F504
+ssb  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: S
-[ultimate] (1). Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>
+[ultimate] (1). Example User (For pass For Work ssh only) <user@example.org>
 
 gpg> addkey
 Please select what kind of key you want:
@@ -375,16 +375,16 @@ some other action (type on the keyboard, move the mouse, utilize the
 disks) during the prime generation; this gives the random number
 generator a better chance to gain enough entropy.
 
-sec  ed25519/42E49B284C30A0DA
+sec  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: SC
      trust: ultimate      validity: ultimate
-ssb  cv25519/6CB4A81FFB3C99B6
+ssb  cv25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: E
-ssb  ed25519/A42813E03A10F504
+ssb  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: S
-ssb  ed25519/5469C4FACC81B60F
+ssb  ed25519/<key-fingerprint>
      created: 2024-01-09  expires: 2034-01-04  usage: A
-[ultimate] (1). Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>
+[ultimate] (1). Example User (For pass For Work ssh only) <user@example.org>
 
 gpg> save
 ```
@@ -396,14 +396,14 @@ Check the secret keys and public keys we generated:
 [keyboxd]
 ---------
 sec   ed25519 2024-01-09 [SC] [expires: 2034-01-04]
-      C8D84EBC5F82494F432ACEF042E49B284C30A0DA
-uid           [ultimate] Ryan Yin (For pass For Work ssh only) <ryan4yin@linux.com>
+      <key-fingerprint>
+uid           [ultimate] Example User (For pass For Work ssh only) <user@example.org>
 ssb   cv25519 2024-01-09 [E] [expires: 2034-01-04]
-      1146D48B93C2177C92D186026CB4A81FFB3C99B6
+      <key-fingerprint>
 ssb   ed25519 2024-01-09 [S] [expires: 2034-01-04]
-      DF64002A822948B17783BBB1A42813E03A10F504
+      <key-fingerprint>
 ssb   ed25519 2024-01-09 [A] [expires: 2034-01-04]
-      65E2C6C1C3559362ABB7047C5469C4FACC81B60F
+      <key-fingerprint>
 
 › gpg --list-public-keys
 ...
@@ -414,9 +414,9 @@ ssb   ed25519 2024-01-09 [A] [expires: 2034-01-04]
 Export Public Keys(Both Primary Key & Sub Keys):
 
 ```bash
-gpg --armor --export ryan4yin@linux.com > ryan4yin-gpg-keys.pub
+gpg --armor --export user@example.org > personal-gpg-keys.pub
 # check what we have exported, we should see 4 public keys
-nix run nixpkgs#pgpdump ryan4yin-gpg-keys.pub
+nix run nixpkgs#pgpdump personal-gpg-keys.pub
 ```
 
 Export Primary Key(The exported key is still encrypted by your passphrase):
@@ -430,10 +430,10 @@ Export Primary Key(The exported key is still encrypted by your passphrase):
 
 ```bash
 # replace the key ID with your own sec key's ID
-gpg --armor --export-secret-keys C8D84EBC5F82494F432ACEF042E49B284C30A0DA! > ryan4yin-primary-key.priv
+gpg --armor --export-secret-keys <key-fingerprint>! > personal-primary-key.priv
 
 # Check the exported primary key's detail info,
-nix run nixpkgs#pgpdump ryan4yin-primary-key.priv
+nix run nixpkgs#pgpdump personal-primary-key.priv
 ...
 Old: Secret Key Packet(tag 5)(134 bytes)
         Ver 4 - new
@@ -445,7 +445,7 @@ Old: Secret Key Packet(tag 5)(134 bytes)
         Iterated and salted string-to-key(s2k 3):
                 Hash alg - SHA1(hash 2)
                 Salt - 8c 78 58 c0 87 83 8c 2c
-                Count - 65011712(coded count 255)
+                Count - <key-id>(coded count 255)
         IV - xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
         Encrypted EdDSA x
         Encrypted SHA1 hash
@@ -463,21 +463,21 @@ passphrase):
 
 ```bash
 # for simplicity, use the same passphrase as your gpg keypair here
-age --passphrase -o ryan4yin-primary-key.priv.age ryan4yin-primary-key.priv
-rm ryan4yin-primary-key.priv
+age --passphrase -o personal-primary-key.priv.age personal-primary-key.priv
+rm personal-primary-key.priv
 ```
 
 Export Sub Keys one by one(The exported keys is still encrypted by your passphrase):
 
 ```bash
-gpg --armor --export-secret-subkeys > ryan4yin-gpg-subkeys.priv
+gpg --armor --export-secret-subkeys > personal-gpg-subkeys.priv
 
 # Check the exported primary key's detail info,
-nix run nixpkgs#pgpdump ryan4yin-gpg-subkeys.priv
+nix run nixpkgs#pgpdump personal-gpg-subkeys.priv
 
 # encrypt it again with age(scrypt)
-age --passphrase  -o ryan4yin-gpg-subkeys.priv.age ryan4yin-gpg-subkeys.priv
-rm ryan4yin-gpg-subkeys.priv
+age --passphrase  -o personal-gpg-subkeys.priv.age personal-gpg-subkeys.priv
+rm personal-gpg-subkeys.priv
 ```
 
 Your can import the exported Private Key via `gpg --import <keyfile>` to restore it, but you need to
@@ -491,14 +491,14 @@ completed:
 
 ```bash
 # delete the primary key and all its sub keys
-gpg --delete-secret-keys ryan4yin@linux.com
+gpg --delete-secret-keys user@example.org
 
 # delete the revocation certificate
-rm ~/.gnupg/openpgp-revocs.d/C8D84EBC5F82494F432ACEF042E49B284C30A0DA.rev
+rm ~/.gnupg/openpgp-revocs.d/<key-fingerprint>.rev
 
 # import our subkeys back
-age --decrypt -o ryan4yin-gpg-subkeys.priv ryan4yin-gpg-subkeys.priv.age
-gpg --import ryan4yin-gpg-subkeys.priv
+age --decrypt -o personal-gpg-subkeys.priv personal-gpg-subkeys.priv.age
+gpg --import personal-gpg-subkeys.priv
 ```
 
 Now check the secret keys and public keys again:
@@ -507,25 +507,25 @@ Now check the secret keys and public keys again:
 
 ```bash
 › gpg --list-secret-keys --keyid-format=long
-/home/ryan/.gnupg/pubring.kbx
+/home/example/.gnupg/pubring.kbx
 -----------------------------
-sec#  ed25519/D1C5FFA3118A41FC 2024-01-09 [SC] [expires: 2034-01-04]
+sec#  ed25519/<key-fingerprint> 2024-01-09 [SC] [expires: 2034-01-04]
       Key fingerprint = E267 943C 33AD C5AF 3D76  4D96 D1C5 FFA3 118A 41FC
-uid                 [ unknown] Ryan Yin (Personal) <ryan4yin@linux.com>
-ssb   cv25519/62526A4A0CF43E33 2024-01-09 [E] [expires: 2034-01-04]
-ssb   ed25519/433A66D63805BD1A 2024-01-09 [S] [expires: 2034-01-04]
-ssb   ed25519/441E3D8FBD313BF2 2024-01-09 [A] [expires: 2034-01-04]
+uid                 [ unknown] Example User (Personal) <user@example.org>
+ssb   cv25519/<key-fingerprint> 2024-01-09 [E] [expires: 2034-01-04]
+ssb   ed25519/<key-fingerprint> 2024-01-09 [S] [expires: 2034-01-04]
+ssb   ed25519/<key-fingerprint> 2024-01-09 [A] [expires: 2034-01-04]
 
 
 › gpg --list-public-keys --keyid-format=long
-/home/ryan/.gnupg/pubring.kbx
+/home/example/.gnupg/pubring.kbx
 -----------------------------
-pub   ed25519/D1C5FFA3118A41FC 2024-01-09 [SC] [expires: 2034-01-04]
+pub   ed25519/<key-fingerprint> 2024-01-09 [SC] [expires: 2034-01-04]
       Key fingerprint = E267 943C 33AD C5AF 3D76  4D96 D1C5 FFA3 118A 41FC
-uid                 [ unknown] Ryan Yin (Personal) <ryan4yin@linux.com>
-sub   cv25519/62526A4A0CF43E33 2024-01-09 [E] [expires: 2034-01-04]
-sub   ed25519/433A66D63805BD1A 2024-01-09 [S] [expires: 2034-01-04]
-sub   ed25519/441E3D8FBD313BF2 2024-01-09 [A] [expires: 2034-01-04]
+uid                 [ unknown] Example User (Personal) <user@example.org>
+sub   cv25519/<key-fingerprint> 2024-01-09 [E] [expires: 2034-01-04]
+sub   ed25519/<key-fingerprint> 2024-01-09 [S] [expires: 2034-01-04]
+sub   ed25519/<key-fingerprint> 2024-01-09 [A] [expires: 2034-01-04]
 ```
 
 ### 5. Signing & Verification
@@ -549,9 +549,9 @@ gpg --verify <file> <signature-file>
 ```bash
 # Encrypt a file via recipient's public key, sign it via your private key for signing, and output cleartext.
 # so that the recipient can decrypt it via his/her private key.
-gpg --armor --sign --encrypt --recipient ryan4yin@linux.com <file>
+gpg --armor --sign --encrypt --recipient user@example.org <file>
 # or use this short version
-gpg -aser ryan4yin@linux.com <file>
+gpg -aser user@example.org <file>
 
 # Decrypt a file via your private key, and verify the signature via the sender's public key.
 gpg --decrypt <file>
@@ -619,7 +619,7 @@ Anyway, let's try to revoke a keypair:
 gpg: checking the trustdb
 gpg: marginals needed: 3  completes needed: 1  trust model: pgp
 gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
-/home/ryan/.gnupg/pubring.kbx
+/home/example/.gnupg/pubring.kbx
 -----------------------------
 pub   ed25519/0x55859965C2742B4B 2024-01-09 [SC]
       Key fingerprint = A2CD 07BD 9631 44CB 2725  5A6B 5585 9965 C274 2B4B
@@ -658,12 +658,9 @@ before the 5 dashes below.  Remove this colon with a text editor
 before importing and publishing this revocation certificate.
 
 :-----BEGIN PGP PUBLIC KEY BLOCK-----
-Comment: This is a revocation certificate
 
-iHgEIBYKACAWIQSizQe9ljFEyyclWmtVhZllwnQrSwUCZZ1T9wIdAAAKCRBVhZll
-wnQrS2LVAQCegRF1qPqY/OCS5QCz8G0ra0XgPYlQYo9pSOjHgfY39AD+Psin2/6t
-STuJCp+gru6OtbTCu8Y2LugQeDh7UicM7Ak=
-=Xfs6
+[base64 revocation certificate body omitted]
+
 -----END PGP PUBLIC KEY BLOCK-----
 ```
 
@@ -678,9 +675,9 @@ gpg:    new key revocations: 1
 gpg: no ultimately trusted keys found
 
 › gpg --list-secret-keys --keyid-format=long
-/home/ryan/.gnupg/pubring.kbx
+/home/example/.gnupg/pubring.kbx
 -----------------------------
-sec   ed25519/55859965C2742B4B 2024-01-09 [SC] [revoked: 2024-01-09]
+sec   ed25519/<key-fingerprint> 2024-01-09 [SC] [revoked: 2024-01-09]
       Key fingerprint = A2CD 07BD 9631 44CB 2725  5A6B 5585 9965 C274 2B4B
 uid                 [ revoked] test <test@test.t>
 
@@ -694,8 +691,8 @@ gpg: reason for revocation: No reason specified
 # ......
 
 # try to encrypt some file via the revoked key, it will fail.
-› gpg -are 9E78E897B6490D6B README.md
-gpg: 9E78E897B6490D6B: skipped: Unusable public key
+› gpg -are <key-fingerprint> README.md
+gpg: <key-fingerprint>: skipped: Unusable public key
 gpg: README.md: encryption failed: Unusable public key
 ```
 

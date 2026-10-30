@@ -40,7 +40,7 @@ in [hosts/README.md](../../../hosts/README.md).
 A MicroVM guest is also registered in its VM host's `microvm.nix`; deploy it with the procedure in
 WA-026 of [WORKAROUNDS.md](../../../WORKAROUNDS.md), not `just microvm-deploy`. On a VM host with
 the `br0` bridge it also needs a `systemd.network.networks` unit that attaches the guest's tap to
-`br0`; the tap name comes from the guest IP (`192.168.5.116` to `vm116`). Some guest outputs also
+`br0`; the tap name comes from the guest IP (`192.0.2.116` to `vm116`). Some guest outputs also
 expose a Colmena node for evaluation or other workflows; do not assume the physical-host deployment
 is done through Colmena.
 

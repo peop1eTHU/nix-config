@@ -1,6 +1,10 @@
 # Backups
 
-How this fleet is backed up, where the data lives, and how to restore it.
+Backup templates for the inherited fleet, storage layout, and restore procedures. `reminix` has no
+automatic backup configured. Desktop remote backups are disabled by default; replace the example
+repository address before opting in. Backup failure notifications require
+`modules.restic-backup.alertManagerUrl`, and Telegram forwarding additionally requires
+`modules.homelab.telegramChatId` on the monitoring host.
 
 ## What protects against what
 
@@ -20,8 +24,8 @@ How this fleet is backed up, where the data lives, and how to restore it.
    ([`modules/nixos/base/restic-backup.nix`](./modules/nixos/base/restic-backup.nix)). Encryption
    happens on the client, so the server only ever stores ciphertext. youko runs `restic-rest-server`
    with `--private-repos`, authenticated by htpasswd, published behind caddy as
-   `restic.writefor.fun`. Deliberately not append-only: a desktop holds both the plaintext and the
-   repository password, so blocking deletion there protects little while denying the client the
+   `restic.homelab.example`. Deliberately not append-only: a desktop holds both the plaintext and
+   the repository password, so blocking deletion there protects little while denying the client the
    automatic retention it needs. A compromised desktop can still `forget --prune` its own repository
    through the REST API, so youko also snapshots `/data/backups` hourly into a read-only btrfs
    subvolume the desktop cannot reach (see
@@ -99,14 +103,14 @@ homelab repository on a homelab host):
 restic -r <repository> --password-file /run/agenix/restic-password snapshots
 restic -r <repository> --password-file /run/agenix/restic-password check
 restic -r <repository> --password-file /run/agenix/restic-password \
-  restore latest --target /tmp/restore --include /home/ryan/Documents
+  restore latest --target /tmp/restore --include /home/remi/Documents
 ```
 
 Remote (REST) repositories also need the service credentials:
 
 ```bash
 set -a; . /run/agenix/restic-rest-credentials; set +a
-restic -r rest:https://restic.writefor.fun/idols-ai/ \
+restic -r rest:https://restic.homelab.example/idols-ai/ \
   --password-file /run/agenix/restic-password snapshots
 ```
 
@@ -138,8 +142,9 @@ Restoring a btrbk snapshot (offline; stop writers first):
   `restic-rest-server` job; `/metrics` is blocked on the public vhost). Repository growth is charted
   from `node-exporter`'s filesystem metrics for youko's `/data` mount instead — rest-server itself
   has no per-repository size metrics.
-- Failures are not silent: a failed `restic-backups-homelab` starts `restic-backup-notify`, which
-  posts to alertmanager and, above info severity, on to telegram. alertmanager clears it after
+- Failures are logged in the journal. With `alertManagerUrl` configured, a failed
+  `restic-backups-homelab` starts `restic-backup-notify`, which posts to that Alertmanager. With a
+  Telegram recipient configured, Alertmanager forwards the alert and clears it after
   `resolve_timeout`.
 
 ## Planned
@@ -158,6 +163,6 @@ Restoring a btrbk snapshot (offline; stop writers first):
 | [`modules/nixos/base/btrbk.nix`](./modules/nixos/base/btrbk.nix)                 | local btrfs snapshots                                |
 | `hosts/12kingdoms-youko/default.nix`                                             | the REST server and youko's own backup               |
 | `hosts/12kingdoms-youko/homelab-services/restic-server-snapshots.nix`            | hourly read-only snapshots of the REST store         |
-| `hosts/12kingdoms-youko/homelab-services/caddy.nix`                              | the `restic.writefor.fun` vhost                      |
+| `hosts/12kingdoms-youko/homelab-services/caddy.nix`                              | the `restic.homelab.example` vhost                   |
 | `secrets/nixos.nix`                                                              | which secret is defined on which host                |
 | `hosts/idols-ai/restic.nix`, `hosts/12kingdoms-youko/default.nix`                | per-host backup configuration                        |

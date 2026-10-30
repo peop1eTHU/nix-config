@@ -7,13 +7,17 @@
   - Android: <https://github.com/android-password-store/Android-Password-Store>
   - Browsers(Chrome/Firefox): <https://github.com/browserpass/browserpass-extension>
 
+The recipient is selected with `pass init <your-key-id>` and stored in `.gpg-id`. Set
+`PASSWORD_STORE_SIGNING_KEY` to your own signing fingerprint if signed recipient files are required.
+This configuration leaves those key choices to the owner of the store.
+
 ## How to change the gpg key of the pass password store?
 
 To ensure security, we should change the GPG key every two or three years. Here is how to do this.
 
 1. Create a new GPG key pair and backup it to a safe place.
 2. Ensure you can access both the old and new GPG keys.
-3. Update `./default.nix` to use the new GPG sub keys.
+3. Remove any `PASSWORD_STORE_KEY` override in your shell before changing the store recipient.
 4. Check which Key `pass` currently uses:
 
    ```bash

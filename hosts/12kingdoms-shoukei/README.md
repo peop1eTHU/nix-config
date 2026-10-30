@@ -2,8 +2,8 @@
 
 This is NixOS's configuration for my Macbook Pro 2022 M2, 16G RAM.
 
-This laptop joins untrusted networks and uses DHCP by default. On the home Wi-Fi
-(`shadow_light_ryan`) run `just shoukei-home-wifi` to pin `192.168.5.108`; the recipe calls
+This laptop joins untrusted networks and uses DHCP by default. On the home Wi-Fi run
+`just shoukei-home-wifi <ssid>` with your network name to pin `192.0.2.108`; the recipe calls
 [`scripts/shoukei-home-wifi-static.nu`](../../scripts/shoukei-home-wifi-static.nu), and
 `vars/networking.nix` records the address with `homeOnly = true`.
 
@@ -11,7 +11,7 @@ This laptop joins untrusted networks and uses DHCP by default. On the home Wi-Fi
 
 The M2 uses 16 KiB pages, and FEX does not emulate 4 KiB guest pages, so x86/x86_64 binaries cannot
 run directly on this kernel. [`game/`](./game/default.nix) enables `programs.x86-on-arm` from
-[our fork](https://github.com/ryan4yin/nix-x86-on-aarch64) of
+[the pinned upstream fork](https://github.com/ryan4yin/nix-x86-on-aarch64) of
 [rowanG077/nix-x86-on-aarch64](https://github.com/rowanG077/nix-x86-on-aarch64), which runs FEX
 inside a 4 KiB `muvm` microVM and registers both ELF handlers:
 

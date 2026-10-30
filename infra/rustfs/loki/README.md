@@ -1,6 +1,6 @@
 # Buckets for Grafana Loki
 
-Stores log data in RustFS (S3-compatible) at `s3.writefor.fun`.
+Stores log data in RustFS (S3-compatible) at `s3.homelab.example`.
 
 Managed here: the `chunks`, `ruler`, and `admin` buckets.
 

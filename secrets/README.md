@@ -146,8 +146,8 @@ let
   idol_ai = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINHZtzeaQyXwuRMLzoOAuTu8P9bu5yc5MBwo5LI3iWBV root@ai";
 
   # An offline recovery key, generated with
-  # `ssh-keygen -t ed25519 -a 256 -C "ryan@agenix-recovery"` and kept in a safe place.
-  recovery_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHnIGH+653Oe+GQaA8zjjj7HWMWp7bWXed4q5KqY4nqG ryan@agenix-recovery";
+  # `ssh-keygen -t ed25519 -a 256 -C "remi@agenix-recovery"` and kept in a safe place.
+  recovery_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHnIGH+653Oe+GQaA8zjjj7HWMWp7bWXed4q5KqY4nqG remi@agenix-recovery";
 
   # Every secret stays decryptable by the desktops plus the recovery key.
   desktop_keys = [
@@ -206,7 +206,7 @@ sub modules via `specialArgs`:
 
     # my private secrets, it's a private repository, you need to replace it with your own.
     mysecrets = {
-      url = "git+ssh://git@github.com/ryan4yin/nix-secrets.git?shallow=1";
+      url = "git+ssh://git@github.com/peop1eTHU/nix-secrets.git?shallow=1";
       flake = false;
     };
   };

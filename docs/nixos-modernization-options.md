@@ -25,15 +25,15 @@ repository already runs** or **unlocks a concrete need**. "It exists and is newe
 
 ## A1. Tailscale Serve instead of caddy vhosts
 
-**Current:** one caddy instance on `youko` fronts 17 vhosts on `*.writefor.fun` by Host/SNI, with
-two TLS chains — a private `ecc-ca` (only repo machines trust it) and a lego/Cloudflare DNS-01
-wildcard for phone/TV clients — plus `file_server`, `header_up Host` (SigV4), a wildcard 404
+**Current:** one caddy instance on `youko` fronts 17 vhosts on `*.homelab.example` by Host/SNI, with
+two TLS chains — a Caddy internal CA (clients must install it explicitly) and a lego/Cloudflare
+DNS-01 wildcard for phone/TV clients — plus `file_server`, `header_up Host` (SigV4), a wildcard 404
 fallback, and a root-readable Cloudflare token in agenix.
 
 **Proposed:** `services.tailscale.serve` for the services whose only clients are tailnet devices.
 
 **Pros:** certificates become automatic and every tailnet device trusts them (today a phone without
-`ecc-ca` gets a certificate error); removes the Cloudflare token and the DNS-01 propagation
+the internal CA gets a certificate error); removes the Cloudflare token and the DNS-01 propagation
 workaround from those services; access control moves from "IP trust zone" to tailnet identity/ACL,
 which is exactly the limitation `SECURITY.md` records; `--tcp=<port>` can also expose raw TCP.
 

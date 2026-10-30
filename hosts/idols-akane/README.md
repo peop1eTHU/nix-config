@@ -12,7 +12,7 @@ sudo nix --experimental-features "nix-command flakes" run github:nix-community/d
 nixos-install --root /mnt --flake .#akane --no-root-password --show-trace --verbose --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store  https://cache.nixos.org/" # install-2
 
 # enter into the installed system, check password & users
-# `su ryan` => `sudo -i` => enter ryan's password => successfully login
+# `su remi` => `sudo -i` => enter remi's password => successfully login
 # if login failed, check the initial password you set in vars/default.nix, and try again
 nixos-enter
 

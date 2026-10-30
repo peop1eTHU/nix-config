@@ -4,132 +4,142 @@
   mylib,
   ...
 }:
+let
+  telegramChatId = config.modules.homelab.telegramChatId;
+in
 {
-  # https://docs.victoriametrics.com/victoriametrics/vmalert/
-  services.vmalert.instances."homelab" = {
-    enable = true;
-    settings = {
-      "httpListenAddr" = "127.0.0.1:8880";
-
-      "datasource.url" = "http://localhost:9090";
-      "notifier.url" = [ "http://localhost:9093" ]; # alertmanager's api
-      # Recording rules results are persisted via remote write.
-      "remoteWrite.url" = "http://localhost:9090";
-      "remoteRead.url" = "http://localhost:9090";
-
-      # Whether to disable long-lived connections to the datasource.
-      "datasource.disableKeepAlive" = true;
-      # Whether to avoid stripping sensitive information such as auth headers or passwords
-      # from URLs in log messages or UI and exported metrics.
-      "datasource.showURL" = false;
-      # Path to the files with alerting and/or recording rules.
-      rule = [
-        "${./alert_rules}/*.yml"
-        "${./alert_rules}/*.yaml"
-        "${./recording_rules}/*.yml"
-        "${./recording_rules}/*.yaml"
-      ];
-      # https://docs.victoriametrics.com/victoriametrics/vmalert/#link-to-alert-source
-      # Set this two args to generate the correct `.GeneratorURL`
-      "external.url" = "https://grafana.writefor.fun";
-      # Grafana resolves this by UID, then by name; it must match the provisioned
-      # datasource name in grafana/datasources.nix.
-      "external.alert.source" =
-        ''explore?left={"datasource":"victoriametrics-homelab","queries":[{"expr":{{ .Expr|jsonEscape|queryEscape }},"refId":"A"}],"range":{"from":"{{ .ActiveAt.UnixMilli }}","to":"now"}}'';
-    };
+  options.modules.homelab.telegramChatId = lib.mkOption {
+    type = lib.types.nullOr lib.types.int;
+    default = null;
+    description = "Telegram recipient for homelab alerts; null keeps notifications local.";
   };
+  config = {
+    # https://docs.victoriametrics.com/victoriametrics/vmalert/
+    services.vmalert.instances."homelab" = {
+      enable = true;
+      settings = {
+        "httpListenAddr" = "127.0.0.1:8880";
 
-  services.prometheus.alertmanager = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-    port = 9093;
-    webExternalUrl = "http://alertmanager.writefor.fun";
-    logLevel = "info";
-    environmentFile = lib.mkIf config.services.prometheus.alertmanager.enable (
-      mylib.requireSecretPath {
-        inherit config;
-        name = "alertmanager.env";
-        consumer = "service alertmanager";
-      }
-    );
-    configuration = {
-      global = {
-        # The smarthost and SMTP sender used for mail notifications.
-        smtp_smarthost = "smtp.qq.com:465";
-        smtp_from = "$SMTP_SENDER_EMAIL";
-        smtp_auth_username = "$SMTP_AUTH_USERNAME";
-        smtp_auth_password = "$SMTP_AUTH_PASSWORD";
-        # smtp.qq.com:465 support SSL only, so we need to disable TLS here.
-        # https://service.mail.qq.com/detail/0/310
-        smtp_require_tls = false;
+        "datasource.url" = "http://localhost:9090";
+        "notifier.url" = [ "http://localhost:9093" ]; # alertmanager's api
+        # Recording rules results are persisted via remote write.
+        "remoteWrite.url" = "http://localhost:9090";
+        "remoteRead.url" = "http://localhost:9090";
+
+        # Whether to disable long-lived connections to the datasource.
+        "datasource.disableKeepAlive" = true;
+        # Whether to avoid stripping sensitive information such as auth headers or passwords
+        # from URLs in log messages or UI and exported metrics.
+        "datasource.showURL" = false;
+        # Path to the files with alerting and/or recording rules.
+        rule = [
+          "${./alert_rules}/*.yml"
+          "${./alert_rules}/*.yaml"
+          "${./recording_rules}/*.yml"
+          "${./recording_rules}/*.yaml"
+        ];
+        # https://docs.victoriametrics.com/victoriametrics/vmalert/#link-to-alert-source
+        # Set this two args to generate the correct `.GeneratorURL`
+        "external.url" = "https://grafana.homelab.example";
+        # Grafana resolves this by UID, then by name; it must match the provisioned
+        # datasource name in grafana/datasources.nix.
+        "external.alert.source" =
+          ''explore?left={"datasource":"victoriametrics-homelab","queries":[{"expr":{{ .Expr|jsonEscape|queryEscape }},"refId":"A"}],"range":{"from":"{{ .ActiveAt.UnixMilli }}","to":"now"}}'';
       };
-      route = {
-        receiver = "telegram";
-        routes = [
+    };
+
+    services.prometheus.alertmanager = {
+      enable = true;
+      listenAddress = "127.0.0.1";
+      port = 9093;
+      webExternalUrl = "http://alertmanager.homelab.example";
+      logLevel = "info";
+      environmentFile = lib.mkIf (telegramChatId != null) (
+        mylib.requireSecretPath {
+          inherit config;
+          name = "alertmanager.env";
+          consumer = "service alertmanager";
+        }
+      );
+      configuration = {
+        global = lib.mkIf (telegramChatId != null) {
+          # The smarthost and SMTP sender used for mail notifications.
+          smtp_smarthost = "smtp.qq.com:465";
+          smtp_from = "$SMTP_SENDER_EMAIL";
+          smtp_auth_username = "$SMTP_AUTH_USERNAME";
+          smtp_auth_password = "$SMTP_AUTH_PASSWORD";
+          # smtp.qq.com:465 support SSL only, so we need to disable TLS here.
+          # https://service.mail.qq.com/detail/0/310
+          smtp_require_tls = false;
+        };
+        route = {
+          receiver = if telegramChatId == null then "null" else "telegram";
+          routes = [
+            {
+              # Meta alerts (Watchdog, InfoInhibitor) and info-level noise never notify.
+              receiver = "null";
+              matchers = [ ''severity =~ "none|info"'' ];
+            }
+            {
+              receiver = if telegramChatId == null then "null" else "telegram";
+              # group alerts by labels
+              group_by = [
+                "job"
+                # --- Alert labels ---
+                "alertname"
+                "alertgroup"
+                # --- kubernetes labels ---
+                "namespace"
+                # --- custom labels ---
+                "cluster"
+                "env"
+                "type"
+              ];
+              group_wait = "3m"; # wait for other alerts to "group by" before send notification
+              group_interval = "5m"; # wait for an interval, before send a new alert in the same group
+              repeat_interval = "5h"; # avoiding repeating reminders too frequently
+            }
+            # {
+            #   # Route only prod env's critical alerts to email (most severe alerts)
+            #   match = {
+            #     severity = "critical";
+            #     env = "prd";
+            #   };
+            #   receiver = "email";
+            #   group_by = [
+            #     "host"
+            #     "namespace"
+            #     "pod"
+            #     "job"
+            #   ];
+            #   group_wait = "1m";
+            #   group_interval = "5m";
+            #   repeat_interval = "2h";
+            # }
+          ];
+        };
+        receivers = [
           {
-            # Meta alerts (Watchdog, InfoInhibitor) and info-level noise never notify.
-            receiver = "null";
-            matchers = [ ''severity =~ "none|info"'' ];
-          }
-          {
-            receiver = "telegram";
-            # group alerts by labels
-            group_by = [
-              "job"
-              # --- Alert labels ---
-              "alertname"
-              "alertgroup"
-              # --- kubernetes labels ---
-              "namespace"
-              # --- custom labels ---
-              "cluster"
-              "env"
-              "type"
-            ];
-            group_wait = "3m"; # wait for other alerts to "group by" before send notification
-            group_interval = "5m"; # wait for an interval, before send a new alert in the same group
-            repeat_interval = "5h"; # avoiding repeating reminders too frequently
+            # Discards all notifications (for meta alerts that should never notify).
+            name = "null";
           }
           # {
-          #   # Route only prod env's critical alerts to email (most severe alerts)
-          #   match = {
-          #     severity = "critical";
-          #     env = "prd";
-          #   };
-          #   receiver = "email";
-          #   group_by = [
-          #     "host"
-          #     "namespace"
-          #     "pod"
-          #     "job"
+          #   name = "email";
+          #   email_configs = [
+          #     {
+          #       to = "user@example.org";
+          #       # Whether to notify about resolved alerts.
+          #       send_resolved = true;
+          #     }
           #   ];
-          #   group_wait = "1m";
-          #   group_interval = "5m";
-          #   repeat_interval = "2h";
           # }
-        ];
-      };
-      receivers = [
-        {
-          # Discards all notifications (for meta alerts that should never notify).
-          name = "null";
-        }
-        # {
-        #   name = "email";
-        #   email_configs = [
-        #     {
-        #       to = "ryan4yin@linux.com";
-        #       # Whether to notify about resolved alerts.
-        #       send_resolved = true;
-        #     }
-        #   ];
-        # }
-        {
+        ]
+        ++ lib.optional (telegramChatId != null) {
           name = "telegram";
           telegram_configs = [
             {
               bot_token = "$TELEGRAM_BOT_TOKEN";
-              chat_id = 586169186; # My Telegram ID
+              chat_id = telegramChatId;
               # Whether to notify about resolved alerts.
               send_resolved = true;
               # Not disabled: resolved alerts are still notified (see send_resolved).
@@ -179,8 +189,8 @@
               '';
             }
           ];
-        }
-      ];
+        };
+      };
     };
   };
 }

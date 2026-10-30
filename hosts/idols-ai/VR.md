@@ -28,8 +28,8 @@ configurations blindly.
 
 ## Wireless connection and pairing
 
-1. Connect the PC by Ethernet and Quest 3 to the trusted home LAN (`192.168.5.0/24`). Prefer 5 GHz
-   or 6 GHz Wi-Fi near the access point. Guest Wi-Fi or client isolation can block discovery and
+1. Connect the PC by Ethernet and Quest 3 to the trusted home LAN (`192.0.2.0/24`). Prefer 5 GHz or
+   6 GHz Wi-Fi near the access point. Guest Wi-Fi or client isolation can block discovery and
    streaming.
 2. Install the WiVRn 26.9 client on the headset: the Meta Store build is packaged as
    `org.meumeu.wivrn`, the GitHub release APK as `org.meumeu.wivrn.github`. Client and server
@@ -55,7 +55,7 @@ configurations blindly.
    ```
 
    This prints a PIN. Open WiVRn on the headset, connect to `ai`, and enter the PIN. If discovery
-   fails, enter `192.168.5.100` manually. Reconnection after pairing does not require running this
+   fails, enter `192.0.2.100` manually. Reconnection after pairing does not require running this
    command again.
 
 5. Audio follows the headset: WiVRn's `wivrn.sink` and `wivrn.source` exist only while a headset is

@@ -19,7 +19,7 @@
 #
 # Usage from a Moonlight client over SSH (see send-clipboard.nu):
 #
-#   wl-paste -n | ssh ryan@ai "nu ~/nix-config/modules/nixos/desktop/networking/sunshine/clipboard.nu"
+#   wl-paste -n | ssh remi@ai "nu ~/nix-config/modules/nixos/desktop/networking/sunshine/clipboard.nu"
 
 def main [
   --user (-u): string = "" # Sunshine session user (default: SUDO_USER or current user)

@@ -13,7 +13,7 @@
         // Read-only surface; drop --disable-write to allow dashboard/alert edits.
         "command": ["mcp-grafana", "--disable-write"],
         "environment": {
-          "GRAFANA_URL": "https://grafana.writefor.fun",
+          "GRAFANA_URL": "http://127.0.0.1:3000",
           "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}",
         },
       },

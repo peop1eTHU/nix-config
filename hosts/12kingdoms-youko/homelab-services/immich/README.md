@@ -40,9 +40,9 @@ document is the agreed design and the rationale.
   `REDIS_HOSTNAME`/`REDIS_PORT`.
 - `services.immich.machine-learning.enable = true` (CPU; `accelerationDevices` left unset — AMD iGPU
   ML is unreliable, revisit `/dev/dri/renderD128` later).
-- Caddy vhost `immich.writefor.fun` -> `http://127.0.0.1:2283`. Unlike the other vhosts (private
-  `ecc-ca`), this one is reached by the Immich mobile app, so it gets a publicly-trusted Let's
-  Encrypt cert via `security.acme` (lego + Cloudflare DNS-01); see `../caddy.nix`.
+- Caddy vhost `immich.homelab.example` -> `http://127.0.0.1:2283`. Unlike the other vhosts (private
+  Caddy's internal CA), this one is reached by the Immich mobile app, so it gets a publicly-trusted
+  Let's Encrypt cert via `security.acme` (lego + Cloudflare DNS-01); see `../caddy.nix`.
 - A `homepage` entry on the dashboard.
 
 ## Storage
@@ -100,7 +100,7 @@ Applied — immich runs on youko. The steps below are the procedure as deployed:
 1. `../valkey.nix`: the shared Valkey instance.
 2. `./default.nix`: the `services.immich` configuration (server, database, machine-learning,
    tmpfiles).
-3. `../caddy.nix`: the `immich.writefor.fun` vhost.
+3. `../caddy.nix`: the `immich.homelab.example` vhost.
 4. `../oci-containers/homepage/config/services.yaml`: dashboard entry.
 5. Preview and deploy: `just youko dry-activate`, then `just youko`.
 6. Register the first user (becomes admin), disable open signup, add the external library, trigger a
@@ -112,8 +112,8 @@ Applied — immich runs on youko. The steps below are the procedure as deployed:
 - Postgres: `\dx` lists `vectorchord`/`pgvector`; `SHOW shared_preload_libraries` includes
   `vchord.so`; the `immich` DB exists.
 - Units: `immich-server`, `immich-machine-learning`, `redis-shared`, `postgresql` are active.
-- `curl 127.0.0.1:2283` and `https://immich.writefor.fun` respond; login works; the external library
-  scan indexes the DCIM photos and ML search returns results.
+- `curl 127.0.0.1:2283` and `https://immich.homelab.example` respond; login works; the external
+  library scan indexes the DCIM photos and ML search returns results.
 
 ## Future
 

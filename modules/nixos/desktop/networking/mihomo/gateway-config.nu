@@ -5,7 +5,7 @@
 # lives. Never commit the output -- it carries the subscriptions and the private
 # domains. `secret` stays a placeholder; the deploy fills it in on the box.
 #
-#   nu gateway-config.nu [-o gateway.yaml] [--address 192.168.5.178]
+#   nu gateway-config.nu [-o gateway.yaml] [--address 192.0.2.178]
 #   scp gateway.yaml root@<gateway>:/tmp/   # fill the secret in on the box, -t, restart
 # ---------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ def main [
   --out (-o): path = "/tmp/gateway.yaml"
   --sources (-s): path = "~/.config/mihomo/sources.yaml"
   --policy (-p): path
-  --address (-a): string = "192.168.5.178"
+  --address (-a): string = "192.0.2.178"
 ] {
   let out = ($out | path expand)
   let tmp = ($out + ".base")

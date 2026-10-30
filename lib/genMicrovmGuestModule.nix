@@ -29,11 +29,11 @@ let
     if builtins.stringLength h == 1 then "0${h}" else h;
   mac = "02:00:00:00:${toHex (builtins.elemAt octets 2)}:${toHex (builtins.elemAt octets 3)}";
 
-  # Same octets as the MAC: 192.168.5.111 -> fd05:5::05:6f. Survives ISP prefix changes.
+  # Same octets as the MAC: 192.0.2.111 -> fd05:5::05:6f. Survives ISP prefix changes.
   ula = pkgs.lib.toLower "${clusterULA6}${toHex (builtins.elemAt octets 2)}:${toHex (builtins.elemAt octets 3)}/64";
 
   # tap iface name on the host (IFNAMSIZ is 16, so <= 15 chars). All homelab VMs
-  # are 192.168.5.0/24, so the last octet is unique per host.
+  # are 192.0.2.0/24, so the last octet is unique per host.
   tapId = "vm${builtins.elemAt octets 3}";
 in
 {
