@@ -115,7 +115,26 @@ capsule_opacity = 0.71
 
 # Keep the default sections and append resource/network monitors after the
 # workspaces, mirroring the old v4 SystemMonitor widget.
-start = [ "launcher", "wallpaper", "workspaces", "cpu", "ram", "disk", "net_rx", "net_tx" ]
+start = [ "launcher", "wallpaper", "workspaces", "group:resources" ]
+end = [ "media", "tray", "group:controls", "bluetooth", "brightness", "battery", "group:session" ]
+
+[[bar.main.capsule_group]]
+id = "resources"
+members = [ "cpu", "ram", "disk", "net_rx", "net_tx" ]
+fill = "surface_variant"
+opacity = 0.71
+
+[[bar.main.capsule_group]]
+id = "controls"
+members = [ "notifications", "clipboard", "network", "volume" ]
+fill = "surface_variant"
+opacity = 0.71
+
+[[bar.main.capsule_group]]
+id = "session"
+members = [ "control-center", "session" ]
+fill = "surface_variant"
+opacity = 0.71
 
 # Clock: year-month-day first, then full English weekday and 24h time
 # (e.g. "2026-09-19 Saturday 16:06"). Weekday names follow LC_TIME.
