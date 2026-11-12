@@ -11,6 +11,7 @@ in
 {
   # One canonical rules file, projected into every agent's config location.
   home.file = {
+    ".claude/CLAUDE.md".source = link; # Claude Code
     ".codex/AGENTS.md".source = link; # Codex
     ".pi/agent/AGENTS.md".source = link; # Pi
     ".agents/AGENTS.md".source = link; # cross-tool; dsh's `$DSH_AGENTS_HOME` from 0.2.1-alpha.2

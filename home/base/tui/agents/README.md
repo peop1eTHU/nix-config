@@ -13,8 +13,8 @@ Markdown with no Nix dependency; this module only wires it into place.
 - `skills.nix`: links the global skills into `~/.agents/skills/<name>`, from pinned flake inputs and
   from `agents/skills/`; the inventory is
   [agents/skills/README.md](../../../../agents/skills/README.md).
-- `packages.nix`: agent CLIs (`codex`, `opencode2`, `pi`) from the `llm-agents` flake input, plus
-  `pkgs.mcp-grafana` for the Grafana MCP server.
+- `packages.nix`: agent CLIs (`claude-code`, `codex`, `opencode2`, `pi`) from the `llm-agents` flake
+  input, plus `pkgs.mcp-grafana` for the Grafana MCP server.
 - `env.nix`: telemetry and auto-update opt-outs for the agents. dsh is installed by this module and
   configured at runtime: profile patches live in `~/.dsh/profiles/<name>/cordis.patch.yml`. The
   Nushell-only shell is selected when the package is built, via `dsh.withPlugins` from
@@ -26,13 +26,14 @@ Markdown with no Nix dependency; this module only wires it into place.
 `rules.nix` creates one out-of-store symlink per target, all pointing at
 `~/nix-config/agents/global-rules.md`:
 
-| Agent      | Target                         |
-| ---------- | ------------------------------ |
-| Codex      | `~/.codex/AGENTS.md`           |
-| OpenCode   | `~/.config/opencode/AGENTS.md` |
-| Pi         | `~/.pi/agent/AGENTS.md`        |
-| Cross-tool | `~/.agents/AGENTS.md`          |
-| dsh        | `~/.dsh/AGENTS.md`             |
+| Agent       | Target                         |
+| ----------- | ------------------------------ |
+| Claude Code | `~/.claude/CLAUDE.md`          |
+| Codex       | `~/.codex/AGENTS.md`           |
+| OpenCode    | `~/.config/opencode/AGENTS.md` |
+| Pi          | `~/.pi/agent/AGENTS.md`        |
+| Cross-tool  | `~/.agents/AGENTS.md`          |
+| dsh         | `~/.dsh/AGENTS.md`             |
 
 dsh reads both `~/.dsh/AGENTS.md` (`$DSH_HOME`) and, from `0.2.1-alpha.2` on, `~/.agents/AGENTS.md`
 (`$DSH_AGENTS_HOME`); identical content renders once.

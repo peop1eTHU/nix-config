@@ -17,6 +17,7 @@ in
 {
   home.packages = [
     # Agents
+    agentPackages.claude-code
     agentPackages.codex
     agentPackages.opencode2
     agentPackages.pi
