@@ -11,6 +11,7 @@ in
 {
   # One canonical rules file, projected into every agent's config location.
   home.file = {
+    ".gemini/GEMINI.md".source = link; # Antigravity CLI
     ".claude/CLAUDE.md".source = link; # Claude Code
     ".codex/AGENTS.md".source = link; # Codex
     ".pi/agent/AGENTS.md".source = link; # Pi

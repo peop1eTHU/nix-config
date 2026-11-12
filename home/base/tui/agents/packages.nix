@@ -17,6 +17,7 @@ in
 {
   home.packages = [
     # Agents
+    agentPackages.antigravity-cli
     agentPackages.claude-code
     agentPackages.codex
     agentPackages.opencode2

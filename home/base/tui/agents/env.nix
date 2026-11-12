@@ -1,5 +1,8 @@
 {
   home.sessionVariables = {
+    # Keep plugin auto-updates disabled when the Claude package forces them on by default.
+    FORCE_AUTOUPDATE_PLUGINS = "0";
+
     PI_TELEMETRY = "0";
     PI_SKIP_VERSION_CHECK = "1";
 

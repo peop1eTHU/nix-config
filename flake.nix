@@ -140,6 +140,7 @@
     };
 
     # AI coding agents
+    # Keep the URL unpinned; flake.lock fixes versions until an explicit flake update.
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     # terminal window manager / multiplexer; nixpkgs lags behind upstream,
